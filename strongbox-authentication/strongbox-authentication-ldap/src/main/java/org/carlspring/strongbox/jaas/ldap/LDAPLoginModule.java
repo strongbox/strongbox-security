@@ -1,22 +1,11 @@
 package org.carlspring.strongbox.jaas.ldap;
 
-import org.carlspring.strongbox.jaas.*;
 import org.carlspring.strongbox.jaas.authentication.BaseLoginModule;
-import org.carlspring.strongbox.jaas.authentication.UserAuthenticator;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
-import org.carlspring.strongbox.jaas.principal.BasePrincipal;
-import org.carlspring.strongbox.jaas.principal.RolePrincipal;
-import org.carlspring.strongbox.jaas.principal.UserPrincipal;
-import org.carlspring.strongbox.util.encryption.EncryptionUtils;
 
-import javax.security.auth.DestroyFailedException;
 import javax.security.auth.Subject;
-import javax.security.auth.callback.*;
-import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.LoginException;
-import javax.security.auth.spi.LoginModule;
-import java.io.IOException;
-import java.security.Principal;
 import java.util.Map;
 
 import org.slf4j.Logger;

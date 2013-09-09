@@ -5,9 +5,10 @@ import org.carlspring.strongbox.jaas.User;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.*;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 import java.util.Hashtable;
 
 /**
@@ -37,20 +38,21 @@ public class UsersDaoImpl
     }
 
     /**
-     *
      * @param DNString - doesn't have a strict string format (the default is considered to be: cn=Firstname Lastname,ou=people,dc=Domain,dc=com
      * @param password
      * @return
      * @throws Exception
      */
     @Override
-    public User findUser(String DNString, String password)
-            throws AuthenticationException
+    public User findUser(String DNString,
+                         String password)
+            throws Exception
     {
-        Hashtable env = new Hashtable();
         User user = null;
-        try{
 
+        try
+        {
+            Hashtable<String, String> env = new Hashtable<String, String>();
             env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
             env.put(Context.PROVIDER_URL, "ldap://carlspring.org:10389/");
             env.put(Context.SECURITY_AUTHENTICATION, "simple");
@@ -69,17 +71,20 @@ public class UsersDaoImpl
             userData.put("cn", String.valueOf(attrs.get("cn").get()));
             userData.put("mail", String.valueOf(attrs.get("mail").get()));
 
-            System.out.println("User \""+String.valueOf(attrs.get("uid").get())+"\" attributes: " +
-                    "\n\t uid: "+userData.get("uid")+
-                    "\n\t cn: "+userData.get("cn")+
-                    "\n\t email: "+userData.get("mail"));
+            System.out.println("User \"" + String.valueOf(attrs.get("uid").get()) + "\" attributes: " +
+                               "\n\t uid: " + userData.get("uid") +
+                               "\n\t cn: " + userData.get("cn") +
+                               "\n\t email: " + userData.get("mail"));
 
             // Populate a User object to use it in the application..
             user = new User();
             user.setUsername(String.valueOf(attrs.get("uid").get()));
-        } catch (NamingException e){
+        }
+        catch (NamingException e)
+        {
             throw new AuthenticationException();
         }
+
         return user;
     }
 
