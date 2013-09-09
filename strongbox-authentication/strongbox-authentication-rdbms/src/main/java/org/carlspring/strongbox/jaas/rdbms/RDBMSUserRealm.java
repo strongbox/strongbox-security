@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.jaas.rdbms;
 
-import org.carlspring.strongbox.dao.UsersDao;
-import org.carlspring.strongbox.dao.impl.UsersDaoImpl;
+import org.carlspring.strongbox.dao.rdbms.UsersDao;
+import org.carlspring.strongbox.dao.rdbms.impl.UsersDaoImpl;
 import org.carlspring.strongbox.jaas.User;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
 

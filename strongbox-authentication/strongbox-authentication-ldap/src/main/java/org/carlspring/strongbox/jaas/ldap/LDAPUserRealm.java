@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.jaas.ldap;
 
-//import org.carlspring.strongbox.dao.UsersDao;
-//import org.carlspring.strongbox.dao.impl.UsersDaoImpl;
+import org.carlspring.strongbox.dao.ldap.UsersDao;
+import org.carlspring.strongbox.dao.ldap.impl.UsersDaoImpl;
 import org.carlspring.strongbox.jaas.User;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
 
@@ -13,23 +13,21 @@ public class LDAPUserRealm
 {
 
     // TODO: Inject this via IoC somehow at some point instead:
-//    private UsersDao usersDao = new UsersDaoImpl();
+    private UsersDao usersDao = new UsersDaoImpl();
 
 
     @Override
     public User findUser(long userId)
             throws Exception
     {
-        return null;
-        // return usersDao.findUser(userId);
+        return usersDao.findUser(userId);
     }
 
     @Override
     public User findUser(String username)
             throws Exception
     {
-        return null;
-//        return usersDao.findUser(username);
+        return usersDao.findUser(username);
     }
 
     @Override
@@ -37,11 +35,9 @@ public class LDAPUserRealm
                          String password)
             throws Exception
     {
-        return null;
-//        return usersDao.findUser(username, password);
+        return usersDao.findUser(username, password);
     }
 
-    /*
     public UsersDao getUsersDao()
     {
         return usersDao;
@@ -51,6 +47,5 @@ public class LDAPUserRealm
     {
         this.usersDao = usersDao;
     }
-    */
 
 }

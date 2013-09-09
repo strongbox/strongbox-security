@@ -47,47 +47,8 @@
 
                 <configuration>
                     <forkMode>once</forkMode>
-                    <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m -Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.btmatthews.maven.plugins</groupId>
-                <artifactId>ldap-maven-plugin</artifactId>
-                <version>1.1.0</version>
-                <configuration>
-                    <monitorPort>11389</monitorPort>
-                    <monitorKey>ldap</monitorKey>
-                    <daemon>true</daemon>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>start-ldap</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>process-test-resources</phase>
-
-                        <configuration>
-                            <version>3</version>
-                            <host>localhost</host>
-                            <port>10389</port>
-                            <authDn>uid=admin,ou=system</authDn>
-                            <rootDn>strongbox</rootDn>
-                            <passwd>secret</passwd>
-                            <ldapFiles>
-                                <ldapFile>${basedir}/src/test/resources/ldap/apacheds.ldif</ldapFile>
-                            </ldapFiles>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop-ldap</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                        <phase>test</phase>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
