@@ -1,0 +1,21 @@
+
+
+The permissions should be stored internally by default. This could mean they would be stored in a database.
+
+Alternatively, the permissions for LDAP and Active Directory users could be resolved from the respective servers.
+There should be options in the configuration.xml for loading/storing these settings.
+
+
+storage0:*:*:*                                              Full access to all repositories.
+*-backup:*:*:*                                              Full access to all *-backup storages.
+storage0:/repo1:*:*                                         Full access to /repo1.
+storage0:/repo1:*:read                                      Read-only access to /repo1.
+storage0:*snapshots*:*:*                                    Full access to all repositories matching *snapshots*.
+storage0:/repo1:/com/foo/bar:read,write,delete              Full access to artifact bar in /repo1.
+storage0:/repo1:/com/foo/**:read,write,delete               Full access to com/foo packages.
+
+storage0:/repo1:!/com/foo:read,write,delete                 Access to com/foo packages is forbidden.
+storage0:/repo1:/com/foo/bar,commons-*:read,write,delete    Full access to com/foo/bar and commons-* artifacts.
+storage0:/repo1:**/**,!/com/foo/bar:read,write,delete       Full access to /repo1, except for the com/foo/bar artifact.
+
+

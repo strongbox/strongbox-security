@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.carlspring.strongbox</groupId>
+        <artifactId>strongbox-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>strongbox-authentication-rdbms</artifactId>
+
+    <name>Strongbox Authentication: RDBMS</name>
+
+    <properties>
+        <derby.url>jdbc:derby://localhost:1527/db;user=derby;password=derby</derby.url>
+
+        <version.derby>10.10.1.1</version.derby>
+    </properties>
+
+    <build>
+        <!--
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>${basedir}/src/main/jetty</directory>
+                <targetPath>${project.build.directory}/jetty</targetPath>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>${project.build.directory}/tmp/test-resources/META-INF/replaceables</directory>
+                <filtering>true</filtering>
+            </testResource>
+            <testResource>
+                <directory>${project.build.directory}/tmp/test-resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>META-INF/replaceables/**</exclude>
+                    <exclude>META-INF/maven/**</exclude>
+                    <exclude>META-INF/MANIFEST.MF</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+        -->
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.15</version>
+
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.carlspring.maven</groupId>
+                <artifactId>derby-maven-plugin</artifactId>
+                <version>1.7</version>
+
+                <configuration>
+                    <failIfAlreadyRunning>false</failIfAlreadyRunning>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>start-derby</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.5</version>
+
+                <dependencies>
+                    <!-- specify the dependent jdbc driver here -->
+                    <dependency>
+                    	<groupId>org.apache.derby</groupId>
+                    	<artifactId>derby</artifactId>
+                    	<version>${version.derby}</version>
+                    </dependency>
+                    <dependency>
+                    	<groupId>org.apache.derby</groupId>
+                    	<artifactId>derbyclient</artifactId>
+                    	<version>${version.derby}</version>
+                    </dependency>
+                </dependencies>
+
+                <!-- common configuration shared by all executions -->
+                <configuration>
+                    <driver>org.apache.derby.jdbc.ClientDriver</driver>
+                    <url>${derby.url};create=true</url>
+                    <onError>continue</onError>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>db-populate</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <onError>abort</onError>
+                            <autocommit>true</autocommit>
+                            <srcFiles>
+                                <srcFile>${basedir}/src/main/resources/sql/derby/01-db.sql</srcFile>
+                                <srcFile>${basedir}/src/main/resources/sql/derby/02-ddl.sql</srcFile>
+                            </srcFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>strongbox-authentication-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.carlspring</groupId>
+            <artifactId>properties-injector</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${version.derby}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>${version.derby}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbynet</artifactId>
+            <version>${version.derby}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-apache-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Use Log4J for logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>${version.jetty}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>jetty-for-integration-tests</id>
+            <activation>
+                <property>
+                    <name>jetty</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>${version.jetty}</version>
+
+                        <configuration>
+                            <scanIntervalSeconds>10</scanIntervalSeconds>
+                            <stopKey>stop-now</stopKey>
+                            <stopPort>9999</stopPort>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>start-jetty</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+                                    <connectors>
+                                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                                            <port>9080</port>
+                                            <maxIdleTime>60000</maxIdleTime>
+                                        </connector>
+                                    </connectors>
+
+                                    <webAppConfig>
+                                        <contextPath>/strongbox</contextPath>
+                                    </webAppConfig>
+
+                                    <loginServices>
+                                        <loginService implementation="org.eclipse.jetty.security.JDBCLoginService">
+                                            <name>strongbox</name>
+                                            <config>${project.build.directory}/jetty/etc/jdbc.realm.properties</config>
+                                        </loginService>
+                                    </loginServices>
+
+                                    <webAppSourceDirectory>${basedir}/src/test/webapp</webAppSourceDirectory>
+
+                                    <jettyConfig>${project.build.testOutputDirectory}/jetty/etc/jetty-jndi.xml,${project.build.testOutputDirectory}/jetty/etc/jetty-jaas.xml</jettyConfig>
+
+                                    <!-- Exclude the test-classes from the Jetty Classpath. Why the hell would you
+                                         want to have the test classes *ON* the classpaathh, when starting Jetty
+                                         in the first place - you are, after all, running the production webapp,
+                                         and invoking the tests *AGAINST* it?!!?!?! -->
+                                    <testClassesDirectory>${project.build.directory}/tmp</testClassesDirectory>
+
+                                    <daemon>true</daemon>
+
+                                    <systemProperties>
+                                        <systemProperty>
+                                            <!-- This is for convenience so that the src/etc/login.conf file can stay unmodified when copied to $jetty.home/etc directory -->
+                                            <name>jetty.home</name>
+                                            <value>${project.build.directory}/jetty</value>
+                                        </systemProperty>
+                                        <systemProperty>
+                                            <!-- Mandatory. This system property tells JAAS where to find the login module configuration file -->
+                                            <name>java.security.auth.login.config</name>
+                                            <value>${project.build.testOutputDirectory}/login.conf</value>
+                                        </systemProperty>
+
+                                        <!-- Log4J settings -->
+                                        <systemProperty>
+                                            <name>log4j.configuration</name>
+                                            <value>file://${project.build.testOutputDirectory}/log4j.properties</value>
+                                        </systemProperty>
+                                        <!--
+                                        <systemProperty>
+                                            <name>log4j.debug</name>
+                                        </systemProperty>
+                                        -->
+                                        <!-- Log4J settings -->
+                                    </systemProperties>
+
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>stop-jetty</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.eclipse.jetty</groupId>
+                                <artifactId>jetty-plus</artifactId>
+                                <version>${version.jetty}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.eclipse.jetty</groupId>
+                                <artifactId>jetty-jndi</artifactId>
+                                <version>${version.jetty}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.eclipse.jetty</groupId>
+                                <artifactId>jetty-util</artifactId>
+                                <version>${version.jetty}</version>
+                            </dependency>
+
+                            <dependency>
+                                <groupId>com.sun.jersey</groupId>
+                                <artifactId>jersey-client</artifactId>
+                                <version>${version.jersey}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.sun.jersey</groupId>
+                                <artifactId>jersey-servlet</artifactId>
+                                <version>${version.jersey}</version>
+                            </dependency>
+
+                            <dependency>
+                                <groupId>com.sun.jersey.contribs</groupId>
+                                <artifactId>jersey-multipart</artifactId>
+                                <version>${version.jersey}</version>
+                            </dependency>
+
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derby</artifactId>
+                                <version>${version.derby}</version>
+                            </dependency>
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derbyclient</artifactId>
+                                <version>${version.derby}</version>
+                            </dependency>
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derbynet</artifactId>
+                            	<version>${version.derby}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

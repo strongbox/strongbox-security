@@ -1,0 +1,8 @@
+
+- Implement NTLM via jcifs, jaaslounge, or an alternative framework which is not tied to an OS
+  (for example: waffle will only work under Windows).
+- Describe steps to setup NTLM on Windows in order to be able to use this module.
+- Describe steps to setup NTLM on Linux via additional already existing Samba modules.
+- Write basic unit tests.
+- Write integration tests which test things under Jetty.
+- Make sure things can be fully built and tested using Maven, JSDK 1.7.x.
