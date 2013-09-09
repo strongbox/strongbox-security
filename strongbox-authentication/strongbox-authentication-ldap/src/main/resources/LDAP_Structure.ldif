@@ -1,0 +1,52 @@
+version: 1
+
+dn: dc=carlspring,dc=org
+objectclass: top
+objectclass: domain
+dc: carlspring
+
+dn: ou=people,dc=carlspring,dc=org
+objectclass: top
+objectclass: organizationalunit
+ou: people
+description: All people in carlspring.org
+
+dn: cn=Strong Box,ou=people,dc=carlspring,dc=org
+objectclass: top
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: organizationalPerson
+cn: Strong Box
+sn: strongbox
+description: Strong Box testing account (password: password)
+mail: test1@carlspring.org
+ou: people
+uid: strongbox
+userpassword: password
+
+dn: cn=Steve Todorov,ou=people,dc=carlspring,dc=org
+objectclass: top
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: organizationalPerson
+cn: Steve Todorov
+sn: stevetodorov
+description: Strong Box testing account for steve (password: password)
+mail: test2@carlspring.org
+ou: people
+uid: stevetodorov
+userpassword: password
+
+dn: cn=Martin Todorov,ou=people,dc=carlspring,dc=org
+objectclass: top
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: organizationalPerson
+cn: Martin Todorov
+sn: martintodorov
+description: Strong Box testing account for martin (password: password)
+mail: test3@carlspring.org
+ou: people
+uid: martintodorov
+userpassword: password
+
