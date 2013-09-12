@@ -1,52 +1,46 @@
 version: 1
 
-dn: dc=carlspring,dc=org
-objectclass: top
-objectclass: domain
-dc: carlspring
+dn: o=carlspringCorp
+objectClass: top
+objectClass: organization
+o: carlspringCorp
 
-dn: ou=people,dc=carlspring,dc=org
-objectclass: top
-objectclass: organizationalunit
-ou: people
-description: All people in carlspring.org
+dn: ou=Groups,o=carlspringCorp
+objectClass: top
+objectClass: organizationalUnit
+ou: Groups
 
-dn: cn=Strong Box,ou=people,dc=carlspring,dc=org
-objectclass: top
-objectclass: inetOrgPerson
-objectclass: person
-objectclass: organizationalPerson
+dn: ou=People,o=carlspringCorp
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
+dn: uid=strongbox,ou=People,o=carlspringCorp
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
 cn: Strong Box
 sn: strongbox
-description: Strong Box testing account (password: password)
-mail: test1@carlspring.org
-ou: people
 uid: strongbox
-userpassword: password
+userPassword: password
 
-dn: cn=Steve Todorov,ou=people,dc=carlspring,dc=org
-objectclass: top
-objectclass: inetOrgPerson
-objectclass: person
-objectclass: organizationalPerson
+dn: uid=stevetodorov,ou=People,o=carlspringCorp
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
 cn: Steve Todorov
 sn: stevetodorov
-description: Strong Box testing account for steve (password: password)
-mail: test2@carlspring.org
-ou: people
 uid: stevetodorov
-userpassword: password
+userPassword: password
 
-dn: cn=Martin Todorov,ou=people,dc=carlspring,dc=org
-objectclass: top
-objectclass: inetOrgPerson
-objectclass: person
-objectclass: organizationalPerson
+dn: uid=martintodorov,ou=People,o=carlspringCorp
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
 cn: Martin Todorov
 sn: martintodorov
-description: Strong Box testing account for martin (password: password)
-mail: test3@carlspring.org
-ou: people
 uid: martintodorov
-userpassword: password
-
+userPassword: password
