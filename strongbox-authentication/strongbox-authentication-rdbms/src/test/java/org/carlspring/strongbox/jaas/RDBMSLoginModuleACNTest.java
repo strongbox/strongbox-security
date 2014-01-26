@@ -6,11 +6,16 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static junit.framework.Assert.fail;
 
 /**
  * @author mtodorov
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
 public class RDBMSLoginModuleACNTest
 {
 
