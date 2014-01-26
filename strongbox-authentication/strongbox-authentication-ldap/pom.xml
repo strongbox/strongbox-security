@@ -16,12 +16,6 @@
 
     <name>Strongbox Authentication: LDAP</name>
 
-    <properties>
-        <derby.url>jdbc:derby://localhost:1527/db;user=derby;password=derby</derby.url>
-
-        <version.derby>10.10.1.1</version.derby>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -47,56 +41,45 @@
 
                 <configuration>
                     <forkMode>once</forkMode>
-                    <argLine>-Xmx1024m -XX:MaxPermSize=256m -Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                    <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
                 </configuration>
             </plugin>
 
-            <!--
             <plugin>
-                <groupId>com.btmatthews.maven.plugins</groupId>
-                <artifactId>ldap-maven-plugin</artifactId>
-                <version>1.1.0</version>
-                <configuration>
-                    <monitorPort>11389</monitorPort>
-                    <monitorKey>ldap</monitorKey>
-                    <daemon>true</daemon>
-                    <serverType>apacheds</serverType>
-                    <version>3</version>
-                    <rootDn>dc=carlspring,dc=org</rootDn>
-                    <authDn>uid=admin,ou=system</authDn>
-                    <ldapPort>10389</ldapPort>
-                    <passwd>secret</passwd>
-                </configuration>
+                <groupId>org.carlspring.maven</groupId>
+                <artifactId>unboundid-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+
                 <executions>
                     <execution>
-                        <id>start-server</id>
+                        <id>unboundid-start</id>
+
                         <phase>test-compile</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>start</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>import-ldif</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>ldif-load</goal>
-                        </goals>
+
                         <configuration>
-                            <ldapFiles>
-                                <ldapFile>${basedir}/src/test/resources/apacheds.ldif</ldapFile>
-                            </ldapFiles>
+                            <baseDn>dc=carlspring,dc=com</baseDn>
+                            <ldifFiles>
+                                <ldifFile>${basedir}/src/test/resources/ldap/unboundid.ldif</ldifFile>
+                            </ldifFiles>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>stop-server</id>
+                        <id>unboundid-stop</id>
+
                         <phase>test</phase>
                         <goals>
                             <goal>stop</goal>
                         </goals>
+
+                        <configuration>
+                            <baseDn>dc=carlspring,dc=com</baseDn>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            -->
         </plugins>
     </build>
 
@@ -106,32 +89,34 @@
             <artifactId>strongbox-authentication-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-multipart</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-apache-client</artifactId>
-            <scope>test</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>strongbox-storage</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Use Log4J for logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
