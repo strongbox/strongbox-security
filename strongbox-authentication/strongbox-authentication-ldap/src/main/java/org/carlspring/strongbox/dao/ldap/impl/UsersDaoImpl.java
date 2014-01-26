@@ -1,16 +1,16 @@
 package org.carlspring.strongbox.dao.ldap.impl;
 
+import org.carlspring.ioc.InjectionException;
+import org.carlspring.ioc.PropertiesResources;
+import org.carlspring.ioc.PropertyValue;
+import org.carlspring.ioc.PropertyValueInjector;
 import org.carlspring.strongbox.dao.ldap.UsersDao;
-import org.carlspring.strongbox.jaas.Credentials;
 import org.carlspring.strongbox.jaas.User;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
+import javax.naming.directory.*;
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
@@ -18,15 +18,41 @@ import org.apache.log4j.Logger;
 /**
  * @author mtodorov
  */
+@PropertiesResources(resources = { "META-INF/properties/ldap.properties" })
 public class UsersDaoImpl
         implements UsersDao
 {
 
     private static final Logger logger = Logger.getLogger(UsersDaoImpl.class);
 
+    @PropertyValue(key = "ldap.host")
+    private String host;
+
+    @PropertyValue(key = "ldap.port")
+    private int port;
+
+    @PropertyValue(key = "ldap.protocol")
+    private String protocol;
+
+    @PropertyValue(key = "ldap.username")
+    private String username;
+
+    @PropertyValue(key = "ldap.password")
+    private String password;
+
+    @PropertyValue(key = "ldap.root.dn")
+    private String rootDn;
+
 
     public UsersDaoImpl()
     {
+    }
+
+    @Override
+    public void initialize()
+            throws InjectionException
+    {
+        PropertyValueInjector.inject(this);
     }
 
     @Override
@@ -53,61 +79,85 @@ public class UsersDaoImpl
     public User findUser(String uid, String password)
             throws Exception
     {
-        Hashtable<String, String> env = new Hashtable<String, String>();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        // TODO: Make this configurable:
-        env.put(Context.PROVIDER_URL, "ldap://carlspring.org:10389/");
-        // TODO: Make this configurable:
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
-
         User user = null;
         DirContext ctx = null;
-        NamingEnumeration enm = null;
+        NamingEnumeration results = null;
+
+        // System.out.println("cn:/ " + cn);
 
         try
         {
             // Step 1: Bind anonymously
-            ctx = new InitialDirContext(env);
+            ctx = getContext();
 
             // Step 2: Search the directory
             // TODO: Make this configurable:
-            String base = "o=carlspringCorp";
-            // TODO: Make this configurable:
-            String filter = "(&(objectClass=inetOrgPerson)(uid={0}))";
 
-            SearchControls ctls = new SearchControls();
-            ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            ctls.setReturningAttributes(new String[0]);
-            ctls.setReturningObjFlag(true);
+            // String filter = "(&(objectClass=user)(uid={0}))";
+            String filter = "(&(objectClass=inetOrgPerson)(uid={0})(userPassword={1}))";
 
-            enm = ctx.search(base, filter, new String[]{uid}, ctls);
+            String[] attrIDs = new String[]{ "ou",
+                                             "uid",       // username
+                                             "cn",        // common name (full name)
+                                             "givenName", // first name
+                                             "sn",        // last name
+                                             "mail" };
 
-            String dn = null;
+            SearchControls controls = getSearchControls(attrIDs);
+            controls.setReturningAttributes(attrIDs);
 
-            if (enm.hasMore())
+            results = ctx.search(rootDn, filter, new String[]{ uid, password }, controls);
+
+            // String uid = null;
+            String firstName = null;
+            String lastName = null;
+            String email = null;
+
+            Attributes attributes = null;
+            if (results.hasMore())
             {
-                SearchResult result = (SearchResult) enm.next();
-                dn = result.getNameInNamespace();
+                SearchResult result = (SearchResult) results.next();
+                rootDn = result.getNameInNamespace();
 
-                logger.debug("dn: " + dn);
+                System.out.println("dn: " + rootDn);
+
+                attributes = result.getAttributes();
+
+                Attribute attrUId = attributes.get("uid");
+                Attribute attrFirstName = attributes.get("givenName");
+                Attribute attrLastName = attributes.get("sn");
+                Attribute attrEmail = attributes.get("mail");
+
+                uid = (String) attrUId.get();
+                // Null-proof these:
+                firstName = attrFirstName != null ? (String) attrFirstName.get() : null;
+                lastName = attrLastName != null ? (String) attrLastName.get() : null;
+                email = attrEmail != null ? (String) attrEmail.get() : null;
+
+                System.out.println(" * uid:            " + attrUId.get());
+                System.out.println(" * firstName:      " + firstName);
+                System.out.println(" * lastName:       " + lastName);
+                System.out.println(" * email :         " + email);
+                System.out.println();
+
+                user = new User();
+                user.setUsername(uid);
+                // user.setCredentials(new Credentials(password));
+
             }
 
-            if (dn == null || enm.hasMore())
-            {
-                // uid not found or not unique
-                throw new NamingException("Authentication failed.");
-            }
+            // if (dn == null || results.hasMore())
+            // {
+            //     // uid not found or not unique
+            //     throw new NamingException("Authentication failed.");
+            // }
 
             // Step 3: Bind with found DN and given password
-            ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, dn);
+            ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, rootDn);
             ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, password);
 
             // Perform a lookup in order to force a bind operation with JNDI
-            ctx.lookup(dn);
-
-            user = new User();
-            user.setUsername(uid);
-            user.setCredentials(new Credentials(password));
+            ctx.lookup(rootDn);
 
             logger.debug("Authentication successful.");
         }
@@ -118,13 +168,89 @@ public class UsersDaoImpl
                 ctx.close();
             }
 
-            if (enm != null)
+            if (results != null)
             {
-                enm.close();
+                results.close();
             }
         }
 
         return user;
+    }
+
+    private InitialDirContext getContext()
+            throws NamingException
+    {
+        Hashtable<String, String> env = new Hashtable<String, String>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.PROVIDER_URL, protocol + "://" + host + ":" + port + "/");
+        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+
+        if (protocol.equalsIgnoreCase("ldaps"))
+        {
+            env.put(Context.SECURITY_PROTOCOL, "ssl");
+        }
+
+        return new InitialDirContext(env);
+    }
+
+    private SearchControls getSearchControls(String[] attrIDs)
+    {
+        SearchControls controls = new SearchControls();
+        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        controls.setReturningAttributes(attrIDs);
+        controls.setReturningObjFlag(true);
+
+        return controls;
+    }
+
+    public String getHost()
+    {
+        return host;
+    }
+
+    public void setHost(String host)
+    {
+        this.host = host;
+    }
+
+    public int getPort()
+    {
+        return port;
+    }
+
+    public void setPort(int port)
+    {
+        this.port = port;
+    }
+
+    public String getProtocol()
+    {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol)
+    {
+        this.protocol = protocol;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
     }
 
 }
