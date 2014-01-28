@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * <p> This LoginModule authenticates users with a password against a database.
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
  * If set to true in the login Configuration,
  * debug messages will be output to the output stream, System.out.
  */
+@Component
 public class RDBMSLoginModule
         extends BaseLoginModule
 {
