@@ -50,6 +50,11 @@
                 <artifactId>unboundid-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
 
+                <configuration>
+                    <baseDn>dc=carlspring,dc=com</baseDn>
+                    <port>40389</port>
+                </configuration>
+
                 <executions>
                     <execution>
                         <id>unboundid-start</id>
@@ -60,7 +65,6 @@
                         </goals>
 
                         <configuration>
-                            <baseDn>dc=carlspring,dc=com</baseDn>
                             <ldifFiles>
                                 <ldifFile>${basedir}/src/test/resources/ldap/unboundid.ldif</ldifFile>
                             </ldifFiles>
@@ -73,10 +77,6 @@
                         <goals>
                             <goal>stop</goal>
                         </goals>
-
-                        <configuration>
-                            <baseDn>dc=carlspring,dc=com</baseDn>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
