@@ -1,17 +1,19 @@
-package org.carlspring.strongbox.dao.rdbms;
+package org.carlspring.strongbox.jaas.authentication;
 
 import org.carlspring.strongbox.jaas.Role;
 import org.carlspring.strongbox.jaas.User;
-import org.carlspring.strongbox.jaas.authentication.UserResolver;
-import org.carlspring.strongbox.jaas.authentication.UserStorage;
 
 import java.sql.SQLException;
 import java.util.Set;
 
 /**
+ * All login modules should have an implementation of this interface,
+ * if they can modify user credentials and privileges.
+ * The methods outlined here are as generic as possible and should be kept that way.
+ *
  * @author mtodorov
  */
-public interface UsersDao extends BaseDBDao, UserResolver, UserStorage
+public interface UserStorage
 {
 
     void createUser(User user)
