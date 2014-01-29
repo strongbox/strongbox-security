@@ -42,7 +42,10 @@ public class UsersDaoImpl extends BaseDaoImpl
 
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, getPasswordWithEncryptionPrefix(user.getPassword()));
+            // TODO: SB-84: Add option to prefix passwords with their encryption algorithm
+            // TODO: Re-visit this at a later time
+            // preparedStatement.setString(2, getPasswordWithEncryptionPrefix(user.getPassword()));
+            preparedStatement.setString(2, user.getPassword());
 
             preparedStatement.execute();
         }
@@ -127,7 +130,10 @@ public class UsersDaoImpl extends BaseDaoImpl
 
             ps = connection.prepareStatement(sql);
             ps.setString(1, username);
-            ps.setString(2, getPasswordWithEncryptionPrefix(password));
+            // TODO: SB-84: Add option to prefix passwords with their encryption algorithm
+            // TODO: Re-visit this at a later time
+            // ps.setString(2, getPasswordWithEncryptionPrefix(password));
+            ps.setString(2, password);
 
             rs = ps.executeQuery();
 
@@ -213,16 +219,18 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             final String sql = "UPDATE users" +
-                               "   SET username = ?," +
-                               "       password = ?" +
-                               " WHERE userid = ?";
+                               "   SET password = ?" +
+                               " WHERE username = ?";
 
             connection = getConnection();
 
             ps = connection.prepareStatement(sql);
-            ps.setString(1, user.getUsername());
-            ps.setString(2, getPasswordWithEncryptionPrefix(user.getPassword()));
-            ps.setLong(3, user.getUserId());
+            // TODO: SB-84: Add option to prefix passwords with their encryption algorithm
+            // TODO: Re-visit this at a later time
+            // ps.setString(1, getPasswordWithEncryptionPrefix(user.getPassword()));
+            ps.setString(1, user.getPassword());
+            ps.setString(2, user.getUsername());
+
             ps.executeUpdate();
         }
         finally

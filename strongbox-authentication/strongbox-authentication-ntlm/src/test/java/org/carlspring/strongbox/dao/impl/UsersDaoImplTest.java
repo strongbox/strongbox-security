@@ -57,7 +57,10 @@ public class UsersDaoImplTest
         UsersDao usersDao = new UsersDaoImpl();
 
         final User user = usersDao.findUser(USERNAME);
-        final String changedPassword = "MD5:" + EncryptionUtils.encryptWithMD5("newpassword");
+        // TODO: SB-84: Add option to prefix passwords with their encryption algorithm
+        // TODO: Re-visit this at a later time
+        // final String changedPassword = "MD5:" + EncryptionUtils.encryptWithMD5("newpassword");
+        final String changedPassword = EncryptionUtils.encryptWithMD5("newpassword");
 
         user.setPassword(changedPassword);
 
