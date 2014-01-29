@@ -149,8 +149,8 @@
                             <onError>abort</onError>
                             <autocommit>true</autocommit>
                             <srcFiles>
-                                <srcFile>${basedir}/src/main/resources/sql/derby/01-db.sql</srcFile>
-                                <srcFile>${basedir}/src/main/resources/sql/derby/02-ddl.sql</srcFile>
+                                <srcFile>${basedir}/src/test/resources/sql/derby/01-db.sql</srcFile>
+                                <srcFile>${basedir}/src/test/resources/sql/derby/02-ddl.sql</srcFile>
                             </srcFiles>
                         </configuration>
                     </execution>
@@ -163,6 +163,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>strongbox-authentication-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>strongbox-storage</artifactId>
             <version>${project.version}</version>
         </dependency>
 
