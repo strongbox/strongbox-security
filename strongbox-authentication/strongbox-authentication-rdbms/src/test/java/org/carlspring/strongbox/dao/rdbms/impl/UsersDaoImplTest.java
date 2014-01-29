@@ -42,27 +42,13 @@ public class UsersDaoImplTest
         final long countNew = usersDao.count();
 
         assertTrue("Failed to create user '" + USERNAME + "'!", countOld < countNew);
-    }
 
-    @Test
-    public void testGetUser()
-            throws Exception
-    {
-        UsersDao usersDao = new UsersDaoImpl();
-        final User user = usersDao.findUser(USERNAME, PASSWORD);
+        // Update the user
 
-        assertNotNull("Failed to lookup user!", user);
-        assertTrue("Failed to lookup user!", user.getUserId() > 0);
-    }
-
-    @Test
-    public void testUpdateUser()
-            throws Exception
-    {
-        UsersDao usersDao = new UsersDaoImpl();
-
-        final User user = usersDao.findUser(USERNAME);
-        final String changedPassword = "MD5:" + EncryptionUtils.encryptWithMD5("newpassword");
+        // TODO: SB-84: Add option to prefix passwords with their encryption algorithm
+        // TODO: Re-visit this at a later time
+        // final String changedPassword = "MD5:" + EncryptionUtils.encryptWithMD5("newpassword");
+        final String changedPassword = EncryptionUtils.encryptWithMD5("newpassword");
 
         user.setPassword(changedPassword);
 
@@ -71,55 +57,19 @@ public class UsersDaoImplTest
         final User updatedUser = usersDao.findUser(USERNAME, changedPassword);
 
         assertEquals("Failed to update the user!", changedPassword, updatedUser.getPassword());
-    }
 
-    @Test
-    public void testCount()
-            throws SQLException
-    {
-        UsersDao usersDao = new UsersDaoImpl();
-        final long count = usersDao.count();
+        user = updatedUser;
 
-        assertTrue("Failed to get the number of available users!", count > 0);
-
-        System.out.println("Number of users in database: " + count);
-    }
-
-    @Test
-    public void testAssignRole()
-            throws Exception
-    {
-        UsersDao usersDao = new UsersDaoImpl();
-        User user = usersDao.findUser(USERNAME);
-
+        // Test roles
         String roleName = "ADMINISTRATOR";
-
         assertFalse("This user is already an administrator!", usersDao.hasRole(user, roleName));
 
         usersDao.assignRole(user, roleName);
 
         assertTrue("Failed to assign role 'ADMINISTRATOR' to user '" + USERNAME + "'",
                    usersDao.hasRole(user, roleName));
-    }
 
-    @Test
-    public void testHasRole()
-            throws Exception
-    {
-        UsersDao usersDao = new UsersDaoImpl();
-        final User user = usersDao.findUser(USERNAME);
-
-        assertTrue("Failed to get the number of available users!", usersDao.hasRole(user, "ADMINISTRATOR"));
-
-        System.out.println(user);
-    }
-
-    @Test
-    public void testDeleteUser()
-            throws Exception
-    {
-        UsersDao usersDao = new UsersDaoImpl();
-        final User user = usersDao.findUser(USERNAME);
+        // Delete the user
         usersDao.removeUserById(user.getUserId());
     }
 

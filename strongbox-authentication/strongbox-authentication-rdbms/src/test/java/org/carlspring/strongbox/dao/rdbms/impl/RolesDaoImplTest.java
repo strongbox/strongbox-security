@@ -41,18 +41,11 @@ public class RolesDaoImplTest
         assertTrue("Failed to create role '" + role.getName() + "'!", countOld < countNew);
 
         Role createdRole = rolesDao.findRole(ROLE_NAME);
+
+        assertNotNull("Failed to lookup role!", createdRole);
+        assertTrue("Failed to lookup role!", createdRole.getRoleId() > 0);
+
         System.out.println("roleid: " + createdRole.getRoleId());
-    }
-
-    @Test
-    public void testGetRole()
-            throws SQLException
-    {
-        RolesDao rolesDao = new RolesDaoImpl();
-        final Role role = rolesDao.findRole(ROLE_NAME);
-
-        assertNotNull("Failed to lookup role!", role);
-        assertTrue("Failed to lookup role!", role.getRoleId() > 0);
     }
 
     @Test
