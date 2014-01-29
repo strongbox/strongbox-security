@@ -51,15 +51,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(preparedStatement);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(preparedStatement);
+            closeConnection(connection);
         }
     }
 
@@ -95,15 +88,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
 
         return user;
@@ -148,15 +134,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
 
         return user;
@@ -195,15 +174,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
 
         return user;
@@ -235,15 +207,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
     }
 
@@ -289,15 +254,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(preparedStatement);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(preparedStatement);
+            closeConnection(connection);
         }
     }
 
@@ -323,15 +281,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(preparedStatement);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(preparedStatement);
+            closeConnection(connection);
         }
     }
 

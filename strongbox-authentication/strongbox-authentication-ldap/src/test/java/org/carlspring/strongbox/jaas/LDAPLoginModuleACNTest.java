@@ -15,7 +15,7 @@ import static junit.framework.Assert.fail;
  * @author mtodorov
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
+@ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml", "classpath*:/META-INF/spring/strongbox-*-context.xml"})
 public class LDAPLoginModuleACNTest
 {
 
@@ -40,6 +40,7 @@ public class LDAPLoginModuleACNTest
     }
 
     /*
+    // TODO: Re-visit this.
     @Test
     public void testCaching()
             throws LoginException
