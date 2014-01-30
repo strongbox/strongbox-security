@@ -30,7 +30,7 @@ public class LDAPLoginModule
 
     private static Logger logger = LoggerFactory.getLogger(LDAPLoginModule.class);
 
-    private UserResolver userResolver = new LDAPUserRealm();
+    private UserResolver userResolver;
 
 
     /**
@@ -54,6 +54,8 @@ public class LDAPLoginModule
                            Map<String, ?> options)
     {
         super.initialize(subject, callbackHandler, sharedState, options);
+
+        userResolver = (UserResolver) getApplicationContext().getBean("userResolver");
 
         logger.debug("LDAPLoginModule initialized!");
     }

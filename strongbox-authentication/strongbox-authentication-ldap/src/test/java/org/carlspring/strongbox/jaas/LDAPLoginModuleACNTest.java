@@ -81,6 +81,7 @@ public class LDAPLoginModuleACNTest
         }
         catch (LoginException e)
         {
+            System.out.println("Aborted as expected.");
         }
 
         try
@@ -92,6 +93,7 @@ public class LDAPLoginModuleACNTest
         }
         catch (LoginException e)
         {
+            System.out.println("Aborted as expected.");
         }
     }
 

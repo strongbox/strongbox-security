@@ -2,18 +2,22 @@ package org.carlspring.strongbox.jaas.ldap;
 
 import org.carlspring.ioc.InjectionException;
 import org.carlspring.strongbox.dao.ldap.UsersDao;
-import org.carlspring.strongbox.dao.ldap.impl.UsersDaoImpl;
 import org.carlspring.strongbox.jaas.User;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author mtodorov
  */
+@Component
 public class LDAPUserRealm
         implements UserResolver
 {
 
     // TODO: Inject this via IoC somehow at some point instead:
+    @Autowired
     private UsersDao usersDao;
 
 
@@ -42,13 +46,6 @@ public class LDAPUserRealm
     public UsersDao getUsersDao()
             throws InjectionException
     {
-        // TODO: Replace with IoC
-        if (usersDao == null)
-        {
-            usersDao = new UsersDaoImpl();
-            usersDao.initialize();
-        }
-
         return usersDao;
     }
 
