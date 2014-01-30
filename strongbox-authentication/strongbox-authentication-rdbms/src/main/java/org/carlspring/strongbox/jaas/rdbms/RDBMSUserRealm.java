@@ -1,19 +1,22 @@
 package org.carlspring.strongbox.jaas.rdbms;
 
 import org.carlspring.strongbox.dao.rdbms.UsersDao;
-import org.carlspring.strongbox.dao.rdbms.impl.UsersDaoImpl;
 import org.carlspring.strongbox.jaas.User;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @author mtodorov
  */
+@Component
 public class RDBMSUserRealm
         implements UserResolver
 {
 
-    // TODO: Inject this via IoC somehow at some point instead:
-    private UsersDao usersDao = new UsersDaoImpl();
+    @Autowired
+    private UsersDao usersDao;
 
 
     @Override

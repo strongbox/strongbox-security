@@ -5,6 +5,7 @@ import org.carlspring.strongbox.jaas.User;
 import org.carlspring.strongbox.util.encryption.EncryptionUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -24,6 +25,9 @@ public class UsersDaoImplTest
 
     public static final String PASSWORD = EncryptionUtils.encryptWithMD5("password");
 
+    @Autowired
+    private UsersDao usersDao;
+
 
     @Test
     public void testCreateUser()
@@ -32,8 +36,6 @@ public class UsersDaoImplTest
         User user = new User();
         user.setUsername(USERNAME);
         user.setPassword(PASSWORD);
-
-        UsersDao usersDao = new UsersDaoImpl();
 
         final long countOld = usersDao.count();
 

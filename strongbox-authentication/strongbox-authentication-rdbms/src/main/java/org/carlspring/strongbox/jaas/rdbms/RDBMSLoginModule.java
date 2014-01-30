@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,7 +32,8 @@ public class RDBMSLoginModule
 
     private static Logger logger = LoggerFactory.getLogger(RDBMSLoginModule.class);
 
-    private UserResolver userResolver = new RDBMSUserRealm();
+    @Autowired
+    private UserResolver userResolver;
 
 
     /**
@@ -56,6 +58,8 @@ public class RDBMSLoginModule
     {
         super.initialize(subject, callbackHandler, sharedState, options);
 
+        userResolver = (UserResolver) getApplicationContext().getBean("userResolver");
+
         logger.debug("RDBMSLoginModule initialized!");
     }
 
@@ -69,13 +73,6 @@ public class RDBMSLoginModule
 
             setUser(getUserAuthenticator().authenticate(username, encryptedPassword, userResolver));
         }
-        /*
-        catch (SQLException e)
-        {
-            throw new LoginException("Failed to authenticate against the database with error message: " +
-                                     e.getMessage());
-        }
-        */
         catch (Exception e)
         {
             throw new LoginException(e.getMessage());
