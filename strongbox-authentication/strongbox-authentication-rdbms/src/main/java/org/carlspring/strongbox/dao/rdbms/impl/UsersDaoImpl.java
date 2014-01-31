@@ -214,7 +214,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     private String getPasswordWithEncryptionPrefix(String password)
     {
-        return (password.startsWith("MD5:") ? password : "MD5:" + password);
+        return password.startsWith("MD5:") ? password : "MD5:" + password;
     }
 
     @Override
