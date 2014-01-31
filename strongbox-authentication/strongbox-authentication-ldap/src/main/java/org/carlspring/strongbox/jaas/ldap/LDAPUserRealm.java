@@ -16,7 +16,6 @@ public class LDAPUserRealm
         implements UserResolver
 {
 
-    // TODO: Inject this via IoC somehow at some point instead:
     @Autowired
     private UsersDao usersDao;
 
