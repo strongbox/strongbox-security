@@ -56,7 +56,7 @@ public abstract class BaseDaoImpl
         }
         catch (InjectionException e)
         {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -106,11 +106,11 @@ public abstract class BaseDaoImpl
         }
         catch (ClassNotFoundException e)
         {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
         catch (Exception e)
         {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
 
         return connection;
@@ -133,12 +133,12 @@ public abstract class BaseDaoImpl
         }
         catch (SQLException e)
         {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             throw new SQLException(e);
         }
         catch (Exception e)
         {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             throw new SQLException(e);
         }
 
@@ -181,7 +181,7 @@ public abstract class BaseDaoImpl
         }
         catch (SQLException e)
         {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
         finally
         {
@@ -253,7 +253,7 @@ public abstract class BaseDaoImpl
             }
             catch (SQLException e)
             {
-                logger.trace(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -269,7 +269,7 @@ public abstract class BaseDaoImpl
             }
             catch (SQLException e)
             {
-                logger.trace(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -285,7 +285,7 @@ public abstract class BaseDaoImpl
             }
             catch (SQLException e)
             {
-                logger.trace(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
