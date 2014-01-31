@@ -47,15 +47,8 @@ public class RolesDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(preparedStatement);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(preparedStatement);
+            closeConnection(connection);
         }
     }
 
@@ -88,15 +81,8 @@ public class RolesDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
 
         return role;
@@ -131,15 +117,8 @@ public class RolesDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
 
         return role;
@@ -169,15 +148,8 @@ public class RolesDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
     }
 
