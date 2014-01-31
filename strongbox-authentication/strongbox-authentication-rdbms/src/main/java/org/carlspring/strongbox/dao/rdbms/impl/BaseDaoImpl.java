@@ -207,15 +207,8 @@ public abstract class BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(ps);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(ps);
+            closeConnection(connection);
         }
     }
 
@@ -238,45 +231,56 @@ public abstract class BaseDaoImpl
         }
         finally
         {
-            try
-            {
-                closeStatement(stmt);
-                closeConnection(connection);
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            closeStatement(stmt);
+            closeConnection(connection);
         }
     }
 
     @Override
     public void closeConnection(Connection connection)
-            throws SQLException
     {
         if (connection != null)
         {
-            connection.close();
+            try
+            {
+                connection.close();
+            }
+            catch (SQLException e)
+            {
+                logger.trace(e.getMessage(), e);
+            }
         }
     }
 
     @Override
     public void closeStatement(Statement statement)
-            throws SQLException
     {
         if (statement != null)
         {
-            statement.close();
+            try
+            {
+                statement.close();
+            }
+            catch (SQLException e)
+            {
+                logger.trace(e.getMessage(), e);
+            }
         }
     }
 
     @Override
     public void closeResultSet(ResultSet resultSet)
-            throws SQLException
     {
         if (resultSet != null)
         {
-            resultSet.close();
+            try
+            {
+                resultSet.close();
+            }
+            catch (SQLException e)
+            {
+                logger.trace(e.getMessage(), e);
+            }
         }
     }
 

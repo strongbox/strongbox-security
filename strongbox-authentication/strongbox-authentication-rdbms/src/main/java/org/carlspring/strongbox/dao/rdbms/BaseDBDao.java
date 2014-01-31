@@ -22,14 +22,11 @@ public interface BaseDBDao
     long count(String whereClause)
             throws SQLException;
 
-    void closeConnection(Connection connection)
-            throws SQLException;
+    void closeConnection(Connection connection);
 
-    void closeStatement(Statement statement)
-            throws SQLException;
+    void closeStatement(Statement statement);
 
-    void closeResultSet(ResultSet resultSet)
-            throws SQLException;
+    void closeResultSet(ResultSet resultSet);
 
     void deleteById(String fieldIdName, long fieldIdValue)
             throws SQLException;
