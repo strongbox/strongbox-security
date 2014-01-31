@@ -73,9 +73,13 @@ public abstract class BaseDaoImpl
                 connection = getJNDIConnection();
 
                 if (connection != null)
+                {
                     JNDI_STATUS = JNDI_AVAILABLE;
+                }
                 else
+                {
                     connection = getDirectConnection();
+                }
             }
             catch (SQLException e)
             {
@@ -171,7 +175,9 @@ public abstract class BaseDaoImpl
 
             rs = stmt.executeQuery(sql);
             if (rs.next())
+            {
                 count = rs.getInt(1);
+            }
         }
         catch (SQLException e)
         {
