@@ -52,7 +52,11 @@
 
                 <configuration>
                     <baseDn>dc=carlspring,dc=com</baseDn>
-                    <port>40389</port>
+                    <portSSL>40636</portSSL>
+                    <useSSL>true</useSSL>
+                    <keyStorePassword>password</keyStorePassword>
+                    <keyStorePath>${basedir}/src/test/resources/config/ssl/keystore.jks</keyStorePath>
+                    <trustStorePath>${basedir}/src/test/resources/config/ssl/truststore.jks</trustStorePath>
                 </configuration>
 
                 <executions>

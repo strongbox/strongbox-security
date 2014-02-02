@@ -5,6 +5,7 @@ import org.carlspring.strongbox.jaas.authentication.AuthenticationCallbackHandle
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +28,17 @@ public class ADLoginModuleACNTest
 
     private static final String INVALID_PASSWORD = "password123";
 
+
+    @Before
+    public void setUp()
+            throws Exception
+    {
+        // Make sure we're using the proper trust and key stores and pass in their credentials
+        System.setProperty("javax.net.ssl.trustStore", "src/test/resources/config/ssl/truststore.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "password");
+        System.setProperty("javax.net.ssl.keyStore", "src/test/resources/config/ssl/keystore.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword", "password");
+    }
 
     @Test
     public void testValidLogin()
