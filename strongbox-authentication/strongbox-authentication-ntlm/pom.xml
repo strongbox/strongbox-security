@@ -78,7 +78,7 @@
 
                 <configuration>
                     <forkMode>once</forkMode>
-                    <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                    <argLine>-Djava.security.auth.login.etc=${project.build.testOutputDirectory}/login.conf</argLine>
                 </configuration>
             </plugin>
 

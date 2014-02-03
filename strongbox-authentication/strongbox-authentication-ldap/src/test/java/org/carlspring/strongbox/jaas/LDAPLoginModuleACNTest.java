@@ -34,9 +34,9 @@ public class LDAPLoginModuleACNTest
             throws Exception
     {
         // Make sure we're using the proper trust and key stores and pass in their credentials
-        System.setProperty("javax.net.ssl.trustStore", "src/test/resources/config/ssl/truststore.jks");
+        System.setProperty("javax.net.ssl.trustStore", "src/test/resources/etc/ssl/truststore.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "password");
-        System.setProperty("javax.net.ssl.keyStore", "src/test/resources/config/ssl/keystore.jks");
+        System.setProperty("javax.net.ssl.keyStore", "src/test/resources/etc/ssl/keystore.jks");
         System.setProperty("javax.net.ssl.keyStorePassword", "password");
     }
 
