@@ -1,0 +1,17 @@
+<users>
+    <user>
+        <username>admin</username>
+        <password>password</password>
+        <roles>
+            <role>administrator</role>
+        </roles>
+    </user>
+    <user>
+        <username>maven</username>
+        <password>maven</password>
+        <roles>
+            <role>user</role>
+            <role>repository-full-access</role>
+        </roles>
+    </user>
+</users>
