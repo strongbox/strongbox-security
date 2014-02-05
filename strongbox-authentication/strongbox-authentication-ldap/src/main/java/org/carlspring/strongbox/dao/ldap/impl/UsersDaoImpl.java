@@ -11,7 +11,7 @@ import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
-import java.util.Hashtable;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 
@@ -42,6 +42,9 @@ public class UsersDaoImpl
 
     @PropertyValue(key = "ldap.root.dn")
     private String rootDn;
+
+    @PropertyValue(key = "ldap.timeout")
+    private int timeout;
 
 
     public UsersDaoImpl()
@@ -105,6 +108,7 @@ public class UsersDaoImpl
 
             SearchControls controls = getSearchControls(attrIDs);
             controls.setReturningAttributes(attrIDs);
+            controls.setTimeLimit(timeout);
 
             results = ctx.search(rootDn, filter, new String[]{ uid, password }, controls);
 
@@ -251,6 +255,16 @@ public class UsersDaoImpl
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public int getTimeout()
+    {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout)
+    {
+        this.timeout = timeout;
     }
 
 }

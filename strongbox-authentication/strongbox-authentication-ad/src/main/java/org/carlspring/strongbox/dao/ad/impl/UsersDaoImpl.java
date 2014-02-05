@@ -43,6 +43,9 @@ public class UsersDaoImpl
     @PropertyValue(key = "ldap.root.dn")
     private String rootDn;
 
+    @PropertyValue(key = "ldap.timeout")
+    private int timeout;
+
 
     public UsersDaoImpl()
     {
@@ -74,9 +77,9 @@ public class UsersDaoImpl
                                                "name",
                                                "uid",
                                                "sn",
-                                               "givenname",
+                                               "givenName",
                                                "memberOf",
-                                               "samaccountname",
+                                               "sAMAccountName",
                                                "userPrincipalName" };
 
     /**
@@ -115,6 +118,7 @@ public class UsersDaoImpl
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             ctls.setReturningAttributes(attrIDs);
             ctls.setReturningObjFlag(true);
+            ctls.setTimeLimit(timeout);
 
             results = ctx.search(rootDn, filter, new String[]{ username }, ctls);
 
@@ -274,6 +278,16 @@ public class UsersDaoImpl
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public int getTimeout()
+    {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout)
+    {
+        this.timeout = timeout;
     }
 
 }
