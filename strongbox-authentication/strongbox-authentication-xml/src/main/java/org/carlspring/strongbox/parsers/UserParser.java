@@ -12,7 +12,7 @@ import com.thoughtworks.xstream.XStream;
  * @author mtodorov
  */
 public class UserParser
-        extends GenericParser<Configuration>
+        extends GenericParser<User>
 {
 
     public XStream getXStreamInstance()
