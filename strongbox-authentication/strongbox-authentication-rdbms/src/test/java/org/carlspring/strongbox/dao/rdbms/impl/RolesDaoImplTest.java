@@ -48,13 +48,9 @@ public class RolesDaoImplTest
         assertTrue("Failed to lookup role!", createdRole.getRoleId() > 0);
 
         System.out.println("roleid: " + createdRole.getRoleId());
-    }
 
-    @Test
-    public void testUpdateRole()
-            throws SQLException
-    {
-        final Role role = rolesDao.findRole(ROLE_NAME);
+        // Update
+        role = rolesDao.findRole(ROLE_NAME);
         final String description = "Permission to read objects";
 
         role.setDescription(description);
@@ -64,25 +60,18 @@ public class RolesDaoImplTest
         final Role updatedRole = rolesDao.findRole(ROLE_NAME);
 
         assertEquals("Failed to update the role!", description, updatedRole.getDescription());
-    }
 
-    @Test
-    public void testDeleteRole()
-            throws SQLException
-    {
-        final Role role = rolesDao.findRole(ROLE_NAME);
-        rolesDao.removeRoleById(role.getRoleId());
-    }
-
-    @Test
-    public void testCount()
-            throws Exception
-    {
+        // Count
         final long count = rolesDao.count();
 
         assertTrue("Failed to get the number of available roles!", count > 0);
 
         System.out.println("Number of roles in database: " + count);
+
+        // Delete
+        rolesDao.removeRoleById(role.getRoleId());
+
+        assertEquals("Failed to delete the role!", 6, rolesDao.count());
     }
 
 }
