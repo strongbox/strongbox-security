@@ -1,29 +1,24 @@
-package org.carlspring.strongbox.parsers;
+package org.carlspring.strongbox.xml.parsers;
 
 import org.carlspring.strongbox.jaas.Credentials;
-import org.carlspring.strongbox.jaas.Role;
 import org.carlspring.strongbox.jaas.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author mtodorov
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
+// @RunWith(SpringJUnit4ClassRunner.class)
+// @ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
 public class UserParserTest
 {
 
@@ -37,10 +32,12 @@ public class UserParserTest
 
 
     @Test
-    public void testParseConfiguration()
+    public void testParseUsers()
             throws IOException
     {
         File xmlFile = new File(XML_FILE);
+
+        System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
 
         UserParser parser = new UserParser();
         final XStream xstream = parser.getXStreamInstance();
@@ -49,11 +46,11 @@ public class UserParserTest
         final List<User> users = (List<User>) xstream.fromXML(xmlFile);
 
         assertTrue("Failed to parse any users!", users != null);
-        assertTrue("Failed to parse any users!", users.isEmpty());
+        assertFalse("Failed to parse any users!", users.isEmpty());
     }
 
     @Test
-    public void testStoreConfiguration()
+    public void testStoreUsers()
             throws IOException
     {
         List<User> users = new ArrayList<User>();
@@ -61,7 +58,9 @@ public class UserParserTest
         users.add(createUser("user", "password", "view", "read"));
         users.add(createUser("deployer", "password", "deploy", "read", "delete"));
 
-        File outputFile = new File(XML_OUTPUT_FILE);
+        File outputFile = new File(XML_OUTPUT_FILE).getAbsoluteFile();
+
+        System.out.println("Storing " + outputFile.getAbsolutePath() + "...");
 
         UserParser parser = new UserParser();
         parser.store(users, outputFile.getCanonicalPath());
@@ -75,13 +74,8 @@ public class UserParserTest
 
         if (roles != null)
         {
-            Set<Role> userRoles = new LinkedHashSet<Role>();
-            for (String r : roles)
-            {
-                Role role = new Role();
-                role.setName(r);
-                userRoles.add(role);
-            }
+            List<String> userRoles = new ArrayList<String>();
+            Collections.addAll(userRoles, roles);
 
             user.setRoles(userRoles);
         }

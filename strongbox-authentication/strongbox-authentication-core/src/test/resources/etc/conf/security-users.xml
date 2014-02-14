@@ -1,14 +1,20 @@
 <users>
     <user>
         <username>admin</username>
-        <password>password</password>
+        <credentials>
+            <password>maven</password>
+            <encryptionAlgorithm>MD5</encryptionAlgorithm>
+        </credentials>
         <roles>
             <role>administrator</role>
         </roles>
     </user>
     <user>
         <username>maven</username>
-        <password>maven</password>
+        <credentials>
+            <password>maven</password>
+            <encryptionAlgorithm>MD5</encryptionAlgorithm>
+        </credentials>
         <roles>
             <role>user</role>
             <role>repository-full-access</role>

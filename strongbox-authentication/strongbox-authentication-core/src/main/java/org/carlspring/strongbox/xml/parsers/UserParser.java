@@ -1,8 +1,7 @@
-package org.carlspring.strongbox.parsers;
+package org.carlspring.strongbox.xml.parsers;
 
-import org.carlspring.strongbox.configuration.Configuration;
+import org.carlspring.strongbox.jaas.Credentials;
 import org.carlspring.strongbox.jaas.User;
-import org.carlspring.strongbox.xml.parsers.GenericParser;
 
 import java.util.List;
 
@@ -21,6 +20,9 @@ public class UserParser
         xstream.autodetectAnnotations(true);
         xstream.alias("user", User.class);
         xstream.alias("users", List.class);
+        xstream.alias("roles", List.class);
+        xstream.alias("role", String.class);
+        xstream.alias("credentials", Credentials.class);
 
         return xstream;
     }

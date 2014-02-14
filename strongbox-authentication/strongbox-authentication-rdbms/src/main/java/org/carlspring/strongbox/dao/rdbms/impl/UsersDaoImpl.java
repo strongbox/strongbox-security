@@ -3,6 +3,7 @@ package org.carlspring.strongbox.dao.rdbms.impl;
 import org.carlspring.strongbox.dao.rdbms.UsersDao;
 import org.carlspring.strongbox.jaas.Role;
 import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.jaas.util.RoleUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -83,7 +84,7 @@ public class UsersDaoImpl extends BaseDaoImpl
                 user.setUserId(rs.getLong("userid"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
-                user.setRoles(getRoles(user));
+                user.setRoles(RoleUtils.toStringList(getRoles(user)));
             }
         }
         finally
@@ -129,7 +130,7 @@ public class UsersDaoImpl extends BaseDaoImpl
                 user.setUserId(rs.getInt("userid"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
-                user.setRoles(getRoles(user));
+                user.setRoles(RoleUtils.toStringList(getRoles(user)));
             }
         }
         finally
@@ -169,7 +170,7 @@ public class UsersDaoImpl extends BaseDaoImpl
                 user.setUserId(rs.getInt("userid"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
-                user.setRoles(getRoles(user));
+                user.setRoles(RoleUtils.toStringList(getRoles(user)));
             }
         }
         finally
