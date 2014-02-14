@@ -127,7 +127,7 @@ public class UsersDaoImpl
                 SearchResult result = (SearchResult) results.next();
                 rootDn = result.getNameInNamespace();
 
-                System.out.println("Getting user " + username + " (dn: " + rootDn + ")...");
+                logger.debug("Getting user " + username + " (dn: " + rootDn + ")...");
 
                 Attribute attrUid = result.getAttributes().get("sAMAccountName");
                 Attribute attrFirstName = result.getAttributes().get("givenName");
@@ -135,11 +135,11 @@ public class UsersDaoImpl
                 Attribute attrEmail = result.getAttributes().get("mail");
 
                 // TODO: Make this less verbose
-                System.out.println(" * sAMAccountName : " + attrUid.get());
-                System.out.println(" * givenName      : " + attrFirstName.get());
-                System.out.println(" * sn             : " + attrLastName.get());
-                System.out.println(" * mail           : " + attrEmail.get());
-                System.out.println();
+                logger.debug(" * sAMAccountName : " + attrUid.get());
+                logger.debug(" * givenName      : " + attrFirstName.get());
+                logger.debug(" * sn             : " + attrLastName.get());
+                logger.debug(" * mail           : " + attrEmail.get());
+                logger.debug("\n");
 
                 user = new User();
                 user.setUsername((String) attrUid.get());
@@ -152,7 +152,7 @@ public class UsersDaoImpl
             if (rootDn == null || results.hasMore())
             {
                 // uid not found or not unique
-                throw new NamingException("Authentication failed.");
+                throw new NamingException("Authentication failed for user " + user + ".");
             }
 
             // Step 3: Bind with found DN and given password
@@ -162,7 +162,7 @@ public class UsersDaoImpl
             // Perform a lookup in order to force a bind operation with JNDI
             ctx.lookup(rootDn);
 
-            System.out.println("Authentication successful.");
+            logger.debug("Authentication successful for user " + user + ".");
         }
         finally
         {

@@ -86,7 +86,7 @@ public class UsersDaoImpl
         DirContext ctx = null;
         NamingEnumeration results = null;
 
-        // System.out.println("cn:/ " + cn);
+        // logger.debug("cn:/ " + cn);
 
         try
         {
@@ -123,7 +123,7 @@ public class UsersDaoImpl
                 SearchResult result = (SearchResult) results.next();
                 rootDn = result.getNameInNamespace();
 
-                System.out.println("dn: " + rootDn);
+                logger.debug("dn: " + rootDn);
 
                 attributes = result.getAttributes();
 
@@ -138,11 +138,11 @@ public class UsersDaoImpl
                 lastName = attrLastName != null ? (String) attrLastName.get() : null;
                 email = attrEmail != null ? (String) attrEmail.get() : null;
 
-                System.out.println(" * uid:            " + attrUId.get());
-                System.out.println(" * firstName:      " + firstName);
-                System.out.println(" * lastName:       " + lastName);
-                System.out.println(" * email :         " + email);
-                System.out.println();
+                logger.debug(" * uid:            " + attrUId.get());
+                logger.debug(" * firstName:      " + firstName);
+                logger.debug(" * lastName:       " + lastName);
+                logger.debug(" * email :         " + email);
+                logger.debug("\n");
 
                 user = new User();
                 user.setUsername(uid);
@@ -163,7 +163,7 @@ public class UsersDaoImpl
             // Perform a lookup in order to force a bind operation with JNDI
             ctx.lookup(rootDn);
 
-            logger.debug("Authentication successful.");
+            logger.debug("Authentication successful for user " + user + ".");
         }
         finally
         {

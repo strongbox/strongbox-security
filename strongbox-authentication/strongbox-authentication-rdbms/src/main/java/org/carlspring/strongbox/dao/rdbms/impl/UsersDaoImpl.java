@@ -12,12 +12,16 @@ import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author mtodorov
  */
 public class UsersDaoImpl extends BaseDaoImpl
         implements UsersDao
 {
+
+    private static final Logger logger = Logger.getLogger(UsersDaoImpl.class);
 
     public static final String TABLE_NAME = "users";
 
@@ -244,7 +248,8 @@ public class UsersDaoImpl extends BaseDaoImpl
             final String sql = "INSERT INTO user_roles (userid, roleid) " +
                                "VALUES (?, (SELECT ROLEID FROM ROLES WHERE ROLE_NAME = ?))";
 
-            System.out.println(sql);
+            logger.debug(sql);
+
             connection = getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
@@ -271,7 +276,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         {
             final String sql = "INSERT INTO user_roles (userid, roleid) VALUES (?, ?)";
 
-            System.out.println(sql);
+            logger.debug(sql);
+
             connection = getConnection();
 
             preparedStatement = connection.prepareStatement(sql);
