@@ -20,7 +20,7 @@ public class RolesParserTest
 
     public static final String TEST_CLASSES = "target/test-classes";
 
-    public static final String CONFIGURATION_BASEDIR = TEST_CLASSES + "/etc/conf";
+    public static final String CONFIGURATION_BASEDIR = TEST_CLASSES + "/xml";
 
     public static final String XML_FILE = CONFIGURATION_BASEDIR + "/roles.xml";
 

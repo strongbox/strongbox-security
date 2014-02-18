@@ -30,7 +30,7 @@ public class AuthorizationConfigurationParserTest
 
 
     @Test
-    public void testParseRoles()
+    public void testParseAuthorizationConfiguration()
             throws IOException
     {
         File xmlFile = new File(XML_FILE);
@@ -51,7 +51,7 @@ public class AuthorizationConfigurationParserTest
     }
 
     @Test
-    public void testStoreRoles()
+    public void testStoreAuthorizationConfiguration()
             throws IOException
     {
         List<Role> roles = new ArrayList<Role>();
