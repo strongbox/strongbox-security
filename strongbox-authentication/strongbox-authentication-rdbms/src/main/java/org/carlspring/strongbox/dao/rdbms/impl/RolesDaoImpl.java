@@ -74,6 +74,7 @@ public class RolesDaoImpl
             if (rs.next())
             {
                 role = new Role();
+                // TODO: This needs to be removed:
                 role.setRoleId(rs.getLong("roleid"));
                 role.setName(rs.getString("role_name"));
                 role.setDescription(rs.getString("description"));
@@ -164,6 +165,7 @@ public class RolesDaoImpl
     public void removeRoleById(long roleId)
             throws SQLException
     {
+        // TODO: This needs to be re-worked.
         deleteById("roleid", roleId);
     }
 

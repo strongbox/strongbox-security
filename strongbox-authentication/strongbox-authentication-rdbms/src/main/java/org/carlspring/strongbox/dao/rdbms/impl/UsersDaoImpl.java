@@ -41,6 +41,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
         try
         {
+            // TODO: This needs to be re-worked:
             final String sql = "INSERT INTO users (userid, username, password) VALUES (DEFAULT, ?, ?)";
 
             connection = getConnection();
@@ -61,6 +62,13 @@ public class UsersDaoImpl extends BaseDaoImpl
         }
     }
 
+    /**
+     * TODO: This needs to be removed
+     *
+     * @param userId
+     * @return
+     * @throws Exception
+     */
     @Override
     public User findUser(long userId)
             throws Exception
@@ -171,6 +179,7 @@ public class UsersDaoImpl extends BaseDaoImpl
             if (rs.next())
             {
                 user = new User();
+                // TODO: This needs to be removed:
                 user.setUserId(rs.getInt("userid"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
@@ -226,6 +235,7 @@ public class UsersDaoImpl extends BaseDaoImpl
     public void removeUser(User user)
             throws SQLException
     {
+        // TODO: This needs to be re-worked.
         removeUserById(user.getUserId());
     }
 
@@ -233,6 +243,7 @@ public class UsersDaoImpl extends BaseDaoImpl
     public void removeUserById(long userId)
             throws SQLException
     {
+        // TODO: This needs to be re-worked.
         deleteById("userid", userId);
     }
 
@@ -342,9 +353,18 @@ public class UsersDaoImpl extends BaseDaoImpl
     public void removeRole(User user, Role role)
             throws SQLException
     {
+        // TODO: This needs to be re-worked.
         deleteByWhereClause("userid = " +user.getUserId() +" AND roleid = " +role.getRoleId());
     }
 
+    /**
+     * TODO: This needs to be re-worked.
+     *
+     * @param user
+     * @param roleName
+     * @return
+     * @throws SQLException
+     */
     @Override
     public boolean hasRole(User user, String roleName)
             throws SQLException
