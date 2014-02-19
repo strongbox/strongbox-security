@@ -36,8 +36,6 @@ public interface BaseDBDao
 
     String getJdbcURL();
 
-    String getJdbcURLShutdown();
-
     String getDriver();
 
     String getDatasourceName();

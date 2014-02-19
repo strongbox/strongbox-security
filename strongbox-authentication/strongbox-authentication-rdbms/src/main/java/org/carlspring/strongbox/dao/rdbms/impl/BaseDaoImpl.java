@@ -38,9 +38,6 @@ public abstract class BaseDaoImpl
     @PropertyValue (key = "jdbc.url")
     private String jdbcURL;
 
-    @PropertyValue (key = "jdbc.url.shutdown")
-    private String jdbcURLShutdown;
-
     @PropertyValue (key = "jdbc.username")
     private String username;
 
@@ -290,22 +287,19 @@ public abstract class BaseDaoImpl
         }
     }
 
+    @Override
     public String getJdbcURL()
     {
         return jdbcURL;
     }
 
     @Override
-    public String getJdbcURLShutdown()
-    {
-        return jdbcURLShutdown;
-    }
-
     public String getDriver()
     {
         return driver;
     }
 
+    @Override
     public String getDatasourceName()
     {
         return datasourceName;
