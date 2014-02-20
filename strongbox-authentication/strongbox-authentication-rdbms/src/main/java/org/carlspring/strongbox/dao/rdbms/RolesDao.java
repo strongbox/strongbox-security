@@ -1,31 +1,32 @@
 package org.carlspring.strongbox.dao.rdbms;
 
 import org.carlspring.strongbox.jaas.Role;
-
-import java.sql.SQLException;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.jaas.authentication.UserStorageException;
 
 /**
  * @author mtodorov
  */
-public interface RolesDao extends BaseDBDao
+public interface RolesDao
+        extends BaseDBDao
 {
 
     void createRole(Role role)
-            throws SQLException;
+            throws UserStorageException;
 
     Role findRole(long roleId)
-            throws SQLException;
+            throws UserResolutionException;
 
     Role findRole(String name)
-            throws SQLException;
+            throws UserResolutionException;
 
     void updateRole(Role role)
-            throws SQLException;
+            throws UserStorageException;
 
     void removeRole(Role role)
-            throws SQLException;
+            throws UserStorageException;
 
-    void removeRoleById(long roleId)
-            throws SQLException;
+    void removeRole(String name)
+            throws UserStorageException;
 
 }

@@ -3,6 +3,7 @@ package org.carlspring.strongbox.jaas.ad;
 import org.carlspring.ioc.InjectionException;
 import org.carlspring.strongbox.dao.ad.UsersDao;
 import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,24 +23,54 @@ public class ADUserRealm
 
     @Override
     public User findUser(long userId)
-            throws Exception
+            throws UserResolutionException
     {
-        return getUsersDao().findUser(userId);
+        User user = null;
+        try
+        {
+            user = getUsersDao().findUser(userId);
+        }
+        catch (InjectionException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
+
+        return user;
     }
 
     @Override
     public User findUser(String username)
-            throws Exception
+            throws UserResolutionException
     {
-        return getUsersDao().findUser(username);
+        User user = null;
+        try
+        {
+            user = getUsersDao().findUser(username);
+        }
+        catch (InjectionException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
+
+        return user;
     }
 
     @Override
     public User findUser(String username,
                          String password)
-            throws Exception
+            throws UserResolutionException
     {
-        return getUsersDao().findUser(username, password);
+        User user = null;
+        try
+        {
+            user = getUsersDao().findUser(username, password);
+        }
+        catch (InjectionException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
+
+        return user;
     }
 
     public UsersDao getUsersDao()

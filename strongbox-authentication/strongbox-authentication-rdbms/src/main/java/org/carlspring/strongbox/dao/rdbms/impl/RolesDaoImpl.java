@@ -2,11 +2,17 @@ package org.carlspring.strongbox.dao.rdbms.impl;
 
 import org.carlspring.strongbox.dao.rdbms.RolesDao;
 import org.carlspring.strongbox.jaas.Role;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.jaas.authentication.UserStorageException;
+import org.carlspring.strongbox.resource.ResourceCloser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mtodorov
@@ -15,6 +21,8 @@ public class RolesDaoImpl
         extends BaseDaoImpl
         implements RolesDao
 {
+
+    private static final Logger logger = LoggerFactory.getLogger(RolesDaoImpl.class);
 
     public static final String TABLE_NAME = "roles";
 
@@ -28,10 +36,10 @@ public class RolesDaoImpl
 
     @Override
     public void createRole(Role role)
-            throws SQLException
+            throws UserStorageException
     {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement ps = null;
 
         try
         {
@@ -39,22 +47,26 @@ public class RolesDaoImpl
 
             connection = getConnection();
 
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, role.getName());
-            preparedStatement.setString(2, role.getDescription());
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, role.getName());
+            ps.setString(2, role.getDescription());
 
-            preparedStatement.execute();
+            ps.execute();
+        }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
         }
         finally
         {
-            closeStatement(preparedStatement);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
     @Override
     public Role findRole(long roleId)
-            throws SQLException
+            throws UserResolutionException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -80,10 +92,14 @@ public class RolesDaoImpl
                 role.setDescription(rs.getString("description"));
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return role;
@@ -91,7 +107,7 @@ public class RolesDaoImpl
 
     @Override
     public Role findRole(String name)
-            throws SQLException
+            throws UserResolutionException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -116,10 +132,14 @@ public class RolesDaoImpl
                 role.setDescription(rs.getString("DESCRIPTION"));
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return role;
@@ -127,7 +147,7 @@ public class RolesDaoImpl
 
     @Override
     public void updateRole(Role role)
-            throws SQLException
+            throws UserStorageException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -147,26 +167,29 @@ public class RolesDaoImpl
             ps.setLong(3, role.getRoleId());
             ps.executeUpdate();
         }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
     @Override
     public void removeRole(Role role)
-            throws SQLException
+            throws UserStorageException
     {
-        removeRoleById(role.getRoleId());
+        // TODO; Re-implement
     }
 
     @Override
-    public void removeRoleById(long roleId)
-            throws SQLException
+    public void removeRole(String name)
+            throws UserStorageException
     {
-        // TODO: This needs to be re-worked.
-        deleteById("roleid", roleId);
+        // TODO; Re-implement
     }
 
     @Override

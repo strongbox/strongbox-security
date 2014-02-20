@@ -1,15 +1,20 @@
 package org.carlspring.strongbox.dao.rdbms.impl;
 
 import org.carlspring.ioc.InjectionException;
-import org.carlspring.strongbox.dao.rdbms.BaseDBDao;
-import org.apache.log4j.Logger;
 import org.carlspring.ioc.PropertiesResources;
 import org.carlspring.ioc.PropertyValue;
 import org.carlspring.ioc.PropertyValueInjector;
+import org.carlspring.strongbox.dao.rdbms.BaseDBDao;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.jaas.authentication.UserStorageException;
+import org.carlspring.strongbox.resource.ResourceCloser;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mtodorov
@@ -19,7 +24,7 @@ public abstract class BaseDaoImpl
         implements BaseDBDao
 {
 
-    private static final Logger logger = Logger.getLogger(BaseDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseDaoImpl.class);
 
     public static final int JNDI_UNKNOWN = 0;
     public static final int JNDI_AVAILABLE = 1;
@@ -99,7 +104,7 @@ public abstract class BaseDaoImpl
         try
         {
             Class.forName(driver);
-            connection = DriverManager.getConnection(jdbcURL/*, username, password*/);
+            connection = DriverManager.getConnection(jdbcURL, username, password);
         }
         catch (ClassNotFoundException e)
         {
@@ -142,16 +147,15 @@ public abstract class BaseDaoImpl
         return conn;
     }
 
-    @Override
     public long count()
-            throws SQLException
+            throws UserResolutionException
     {
         return count(null);
     }
 
     @Override
     public long count(String whereClause)
-            throws SQLException
+            throws UserResolutionException
     {
         long count = 0;
 
@@ -182,9 +186,9 @@ public abstract class BaseDaoImpl
         }
         finally
         {
-            closeResultSet(rs);
-            closeStatement(stmt);
-            closeConnection(connection);
+            ResourceCloser.close(rs, logger);
+            ResourceCloser.close(stmt, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return count;
@@ -210,8 +214,8 @@ public abstract class BaseDaoImpl
         }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
@@ -234,75 +238,9 @@ public abstract class BaseDaoImpl
         }
         finally
         {
-            closeStatement(stmt);
-            closeConnection(connection);
+            ResourceCloser.close(stmt, logger);
+            ResourceCloser.close(connection, logger);
         }
-    }
-
-    @Override
-    public void closeConnection(Connection connection)
-    {
-        if (connection != null)
-        {
-            try
-            {
-                connection.close();
-            }
-            catch (SQLException e)
-            {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    @Override
-    public void closeStatement(Statement statement)
-    {
-        if (statement != null)
-        {
-            try
-            {
-                statement.close();
-            }
-            catch (SQLException e)
-            {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    @Override
-    public void closeResultSet(ResultSet resultSet)
-    {
-        if (resultSet != null)
-        {
-            try
-            {
-                resultSet.close();
-            }
-            catch (SQLException e)
-            {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    @Override
-    public String getJdbcURL()
-    {
-        return jdbcURL;
-    }
-
-    @Override
-    public String getDriver()
-    {
-        return driver;
-    }
-
-    @Override
-    public String getDatasourceName()
-    {
-        return datasourceName;
     }
 
 }

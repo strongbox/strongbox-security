@@ -3,7 +3,10 @@ package org.carlspring.strongbox.dao.rdbms.impl;
 import org.carlspring.strongbox.dao.rdbms.UsersDao;
 import org.carlspring.strongbox.jaas.Role;
 import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.jaas.authentication.UserStorageException;
 import org.carlspring.strongbox.jaas.util.RoleUtils;
+import org.carlspring.strongbox.resource.ResourceCloser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +15,9 @@ import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author mtodorov
@@ -21,7 +26,7 @@ public class UsersDaoImpl extends BaseDaoImpl
         implements UsersDao
 {
 
-    private static final Logger logger = Logger.getLogger(UsersDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UsersDaoImpl.class);
 
     public static final String TABLE_NAME = "users";
 
@@ -34,7 +39,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     @Override
     public void createUser(User user)
-            throws SQLException
+            throws UserStorageException
     {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -55,10 +60,14 @@ public class UsersDaoImpl extends BaseDaoImpl
 
             preparedStatement.execute();
         }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(preparedStatement);
-            closeConnection(connection);
+            ResourceCloser.close(preparedStatement, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
@@ -71,7 +80,7 @@ public class UsersDaoImpl extends BaseDaoImpl
      */
     @Override
     public User findUser(long userId)
-            throws Exception
+            throws UserResolutionException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -99,10 +108,14 @@ public class UsersDaoImpl extends BaseDaoImpl
                 user.setRoles(RoleUtils.toStringList(getRoles(user)));
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return user;
@@ -111,7 +124,7 @@ public class UsersDaoImpl extends BaseDaoImpl
     @Override
     public User findUser(String username,
                          String password)
-            throws Exception
+            throws UserResolutionException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -145,10 +158,14 @@ public class UsersDaoImpl extends BaseDaoImpl
                 user.setRoles(RoleUtils.toStringList(getRoles(user)));
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return user;
@@ -156,7 +173,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     @Override
     public User findUser(String username)
-            throws Exception
+            throws UserResolutionException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -186,10 +203,14 @@ public class UsersDaoImpl extends BaseDaoImpl
                 user.setRoles(RoleUtils.toStringList(getRoles(user)));
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return user;
@@ -197,7 +218,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     @Override
     public void updateUser(User user)
-            throws SQLException
+            throws UserStorageException
     {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -219,10 +240,14 @@ public class UsersDaoImpl extends BaseDaoImpl
 
             ps.executeUpdate();
         }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
@@ -233,7 +258,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     @Override
     public void removeUser(User user)
-            throws SQLException
+            throws UserStorageException
     {
         // TODO: This needs to be re-worked.
         removeUserById(user.getUserId());
@@ -241,18 +266,25 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     @Override
     public void removeUserById(long userId)
-            throws SQLException
+            throws UserStorageException
     {
-        // TODO: This needs to be re-worked.
-        deleteById("userid", userId);
+        try
+        {
+            // TODO: This needs to be re-worked.
+            deleteById("userid", userId);
+        }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void assignRole(User user, String roleName)
-            throws SQLException
+            throws UserStorageException
     {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement ps = null;
 
         try
         {
@@ -263,25 +295,29 @@ public class UsersDaoImpl extends BaseDaoImpl
 
             connection = getConnection();
 
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, user.getUserId());
-            preparedStatement.setString(2, roleName);
+            ps = connection.prepareStatement(sql);
+            ps.setLong(1, user.getUserId());
+            ps.setString(2, roleName);
 
-            preparedStatement.execute();
+            ps.execute();
+        }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
         }
         finally
         {
-            closeStatement(preparedStatement);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
     @Override
     public void assignRole(User user, Role role)
-            throws SQLException
+            throws UserStorageException
     {
         Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        PreparedStatement ps = null;
 
         try
         {
@@ -291,28 +327,32 @@ public class UsersDaoImpl extends BaseDaoImpl
 
             connection = getConnection();
 
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, user.getUserId());
-            preparedStatement.setLong(2, role.getRoleId());
+            ps = connection.prepareStatement(sql);
+            ps.setLong(1, user.getUserId());
+            ps.setLong(2, role.getRoleId());
 
-            preparedStatement.execute();
+            ps.execute();
+        }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
         }
         finally
         {
-            closeStatement(preparedStatement);
-            closeConnection(connection);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
     @Override
     public Set<Role> getRoles(User user)
-            throws SQLException
+            throws UserResolutionException
     {
         Set<Role> roles = new LinkedHashSet<Role>();
 
         Connection connection = null;
         PreparedStatement ps = null;
-        ResultSet rs;
+        ResultSet rs = null;
 
         try
         {
@@ -340,10 +380,15 @@ public class UsersDaoImpl extends BaseDaoImpl
                 roles.add(role);
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(rs, logger);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return roles;
@@ -351,10 +396,17 @@ public class UsersDaoImpl extends BaseDaoImpl
 
     @Override
     public void removeRole(User user, Role role)
-            throws SQLException
+            throws UserStorageException
     {
-        // TODO: This needs to be re-worked.
-        deleteByWhereClause("userid = " +user.getUserId() +" AND roleid = " +role.getRoleId());
+        try
+        {
+            // TODO: This needs to be re-worked.
+            deleteByWhereClause("userid = " +user.getUserId() +" AND roleid = " +role.getRoleId());
+        }
+        catch (SQLException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -367,13 +419,13 @@ public class UsersDaoImpl extends BaseDaoImpl
      */
     @Override
     public boolean hasRole(User user, String roleName)
-            throws SQLException
+            throws UserResolutionException
     {
         boolean hasRole = false;
 
         Connection connection = null;
         PreparedStatement ps = null;
-        ResultSet rs;
+        ResultSet rs = null;
 
         try
         {
@@ -397,10 +449,15 @@ public class UsersDaoImpl extends BaseDaoImpl
                 hasRole = rs.getLong(1) > 0;
             }
         }
+        catch (SQLException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            closeStatement(ps);
-            closeConnection(connection);
+            ResourceCloser.close(rs, logger);
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
 
         return hasRole;

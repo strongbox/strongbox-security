@@ -2,6 +2,7 @@ package org.carlspring.strongbox.dao.rdbms;
 
 import org.carlspring.strongbox.jaas.Role;
 import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.jaas.authentication.UserResolver;
 import org.carlspring.strongbox.jaas.authentication.UserStorage;
 
@@ -14,31 +15,10 @@ import java.util.Set;
 public interface UsersDao extends BaseDBDao, UserResolver, UserStorage
 {
 
-    void createUser(User user)
-            throws SQLException;
-
-    void updateUser(User user)
-            throws SQLException;
-
-    void removeUser(User user)
-            throws SQLException;
-
-    void removeUserById(long userId)
-            throws SQLException;
-
-    void assignRole(User user, Role role)
-            throws SQLException;
-
-    void assignRole(User user, String roleName)
-            throws SQLException;
-
     Set<Role> getRoles(User user)
-            throws SQLException;
-
-    void removeRole(User user, Role role)
-            throws SQLException;
+            throws UserResolutionException;
 
     boolean hasRole(User user, String roleName)
-            throws SQLException;
+            throws UserResolutionException;
 
 }

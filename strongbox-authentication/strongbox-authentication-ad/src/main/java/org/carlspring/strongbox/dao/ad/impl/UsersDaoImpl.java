@@ -6,6 +6,8 @@ import org.carlspring.ioc.PropertyValue;
 import org.carlspring.ioc.PropertyValueInjector;
 import org.carlspring.strongbox.dao.ad.UsersDao;
 import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.resource.ResourceCloser;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -13,7 +15,9 @@ import javax.naming.NamingException;
 import javax.naming.directory.*;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author mtodorov
@@ -23,7 +27,7 @@ public class UsersDaoImpl
         implements UsersDao
 {
 
-    private static final Logger logger = Logger.getLogger(UsersDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UsersDaoImpl.class);
 
     @PropertyValue(key = "ldap.host")
     private String host;
@@ -60,14 +64,14 @@ public class UsersDaoImpl
 
     @Override
     public User findUser(long userId)
-            throws Exception
+            throws UserResolutionException
     {
         return null;
     }
 
     @Override
     public User findUser(String username)
-            throws Exception
+            throws UserResolutionException
     {
         return null;
     }
@@ -91,7 +95,7 @@ public class UsersDaoImpl
     @Override
     public User findUser(String username,
                          String password)
-            throws Exception
+            throws UserResolutionException
     {
         User user = null;
 
@@ -164,17 +168,14 @@ public class UsersDaoImpl
 
             logger.debug("Authentication successful for user " + user + ".");
         }
+        catch (NamingException e)
+        {
+            throw new UserResolutionException(e.getMessage(), e);
+        }
         finally
         {
-            if (ctx != null)
-            {
-                ctx.close();
-            }
-
-            if (results != null)
-            {
-                results.close();
-            }
+            ResourceCloser.close(ctx, logger);
+            ResourceCloser.close(results, logger);
         }
 
         return user;
