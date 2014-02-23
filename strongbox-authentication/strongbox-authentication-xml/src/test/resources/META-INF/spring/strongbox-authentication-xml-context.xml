@@ -8,12 +8,19 @@
     <context:annotation-config/>
     <context:component-scan base-package="org.carlspring.strongbox"/>
 
-    <bean name="usersDao" class="org.carlspring.strongbox.dao.xml.impl.UsersDaoImpl" />
+    <bean name="usersDao" class="org.carlspring.strongbox.dao.xml.impl.UsersDaoImpl">
+        <property name=""
+    </bean>
 
-    <bean name="userResolver" class="org.carlspring.strongbox.jaas.xml.XMLUserRealm">
+    <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.xml.XMLUserRealm">
         <property name="usersDao" ref="usersDao"/>
     </bean>
 
-    <bean name="authorizationManager" class="org.carlspring.strongbox.jaas.managers.AuthorizationManager" init-method="load"/>
+    <bean name="userManager" class="org.carlspring.strongbox.security.jaas.managers.UserManager" />
 
+    <bean name="userParser" class="org.carlspring.strongbox.xml.parsers.UserParser" />
+
+    <bean name="authorizationManager" class="org.carlspring.strongbox.security.jaas.managers.AuthorizationManager"
+          init-method="load"/>
+    
 </beans>

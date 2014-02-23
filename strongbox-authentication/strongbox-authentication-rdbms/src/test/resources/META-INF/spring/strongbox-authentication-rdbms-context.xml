@@ -14,7 +14,7 @@
     <bean id="rolesDao" class="org.carlspring.strongbox.dao.rdbms.impl.RolesDaoImpl">
     </bean>
 
-    <bean name="userResolver" class="org.carlspring.strongbox.jaas.rdbms.RDBMSUserRealm">
+    <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.rdbms.RDBMSUserRealm">
         <property name="usersDao" ref="usersDao"/>
     </bean>
 

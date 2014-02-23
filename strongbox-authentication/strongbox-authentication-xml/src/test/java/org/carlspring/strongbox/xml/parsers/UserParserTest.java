@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.xml.parsers;
 
 import org.carlspring.strongbox.jaas.Credentials;
-import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.security.jaas.User;
 
 import java.io.File;
 import java.io.IOException;

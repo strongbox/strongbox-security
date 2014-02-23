@@ -1,12 +1,10 @@
 package org.carlspring.strongbox.dao.xml;
 
-import org.carlspring.strongbox.jaas.Role;
-import org.carlspring.strongbox.jaas.User;
-import org.carlspring.strongbox.jaas.authentication.UserResolver;
-import org.carlspring.strongbox.jaas.authentication.UserStorage;
-
-import java.sql.SQLException;
-import java.util.Set;
+import org.carlspring.strongbox.security.jaas.Role;
+import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolver;
+import org.carlspring.strongbox.security.jaas.authentication.UserStorage;
+import org.carlspring.strongbox.security.jaas.authentication.UserStorageException;
 
 /**
  * @author mtodorov
@@ -15,30 +13,21 @@ public interface UsersDao extends UserResolver, UserStorage
 {
 
     void createUser(User user)
-            throws SQLException;
+            throws UserStorageException;
 
     void updateUser(User user)
-            throws SQLException;
+            throws UserStorageException;
 
     void removeUser(User user)
-            throws SQLException;
+            throws UserStorageException;
 
     void removeUserById(long userId)
-            throws SQLException;
+            throws UserStorageException;
 
     void assignRole(User user, Role role)
-            throws SQLException;
+            throws UserStorageException;
 
     void assignRole(User user, String roleName)
-            throws SQLException;
-
-    Set<Role> getRoles(User user)
-            throws SQLException;
-
-    void removeRole(User user, Role role)
-            throws SQLException;
-
-    boolean hasRole(User user, String roleName)
-            throws SQLException;
+            throws UserStorageException;
 
 }

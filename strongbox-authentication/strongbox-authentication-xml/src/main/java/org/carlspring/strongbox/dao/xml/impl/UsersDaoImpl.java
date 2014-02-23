@@ -1,22 +1,40 @@
 package org.carlspring.strongbox.dao.xml.impl;
 
 import org.carlspring.strongbox.dao.xml.UsersDao;
-import org.carlspring.strongbox.jaas.Role;
-import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.security.jaas.Role;
+import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.security.jaas.authentication.UserStorageException;
+import org.carlspring.strongbox.security.jaas.managers.UserManager;
+import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
+import org.carlspring.strongbox.xml.parsers.UserParser;
 
-import java.sql.SQLException;
-import java.util.Set;
+import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
 /**
  * @author mtodorov
  */
+@Component
 public class UsersDaoImpl
         implements UsersDao
 {
 
-    private static final Logger logger = Logger.getLogger(UsersDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(UsersDaoImpl.class);
+
+    @Autowired
+    private ConfigurationResourceResolver configurationResourceResolver;
+
+    @Autowired
+    private UserManager userManager;
+
+    @Autowired
+    private UserParser userParser;
 
 
     public UsersDaoImpl()
@@ -25,86 +43,143 @@ public class UsersDaoImpl
 
     @Override
     public void createUser(User user)
-            throws SQLException
+            throws UserStorageException
     {
-
+        try
+        {
+            userManager.add(user);
+            userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+        }
+        catch (IOException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void updateUser(User user)
-            throws SQLException
+            throws UserStorageException
     {
-
+        // In effect, this is the same operation here, as the user is stored in a map,
+        // which needs to be serialized all over again.
+        createUser(user);
     }
 
     @Override
     public void removeUser(User user)
-            throws SQLException
+            throws UserStorageException
     {
-
+        if (userManager.contains(user.getUsername()))
+        {
+            try
+            {
+                userManager.remove(user.getUsername());
+                userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+            }
+            catch (IOException e)
+            {
+                throw new UserStorageException(e.getMessage(), e);
+            }
+        }
+        else
+        {
+            logger.error("Failed to remove user " + user.getUsername() + " as the user was not found in store.");
+        }
     }
 
+    @Deprecated
     @Override
     public void removeUserById(long userId)
-            throws SQLException
+            throws UserStorageException
     {
-
+        // TODO: Remove this method from the implemented interfaces
     }
 
     @Override
     public void assignRole(User user,
                            Role role)
-            throws SQLException
+            throws UserStorageException
     {
-
+        assignRole(user, role.getName());
     }
 
     @Override
-    public void assignRole(User user, String roleName)
-            throws SQLException
+    public void assignRole(User user,
+                           String roleName)
+            throws UserStorageException
     {
-
+        try
+        {
+            user.addRole(roleName);
+            userManager.add(user);
+            userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+        }
+        catch (IOException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
     }
 
+    @Deprecated
     @Override
-    public Set<Role> getRoles(User user)
-            throws SQLException
-    {
-        return null;
-    }
-
-    @Override
-    public void removeRole(User user, Role role)
-            throws SQLException
+    public void removeRole(User user,
+                           Role role)
+            throws UserStorageException
     {
 
-    }
-
-    @Override
-    public boolean hasRole(User user, String roleName)
-            throws SQLException
-    {
-        return false;
     }
 
     @Override
     public User findUser(long userId)
-            throws Exception
+            throws UserResolutionException
     {
         return null;
     }
 
     @Override
     public User findUser(String username)
-            throws Exception
+            throws UserResolutionException
     {
+        return userManager.get(username);
+    }
+
+    @Override
+    public User findUser(String username,
+                         String password)
+            throws UserResolutionException
+    {
+        final User user = userManager.get(username);
+        if (user.getPassword().equals(password))
+        {
+            return user;
+        }
+
         return null;
     }
 
     @Override
-    public User findUser(String username, String password)
-            throws Exception
+    public long count()
+            throws UserStorageException
     {
-        return null;
+        return 0;
     }
+
+    public UserParser getUserParser()
+    {
+        return userParser;
+    }
+
+    public void setUserParser(UserParser userParser)
+    {
+        this.userParser = userParser;
+    }
+
+    public Resource getUsersConfigurationFile()
+            throws IOException
+    {
+        return configurationResourceResolver.getConfigurationResource("etc/conf/security-users.xml",
+                                                                      "security.users.xml",
+                                                                      "etc/conf/security-users.xml");
+    }
+
 }

@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.dao.rdbms.impl;
 
 import org.carlspring.strongbox.dao.rdbms.RolesDao;
-import org.carlspring.strongbox.jaas.Role;
+import org.carlspring.strongbox.security.jaas.Role;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

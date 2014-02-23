@@ -5,8 +5,8 @@ import org.carlspring.ioc.PropertiesResources;
 import org.carlspring.ioc.PropertyValue;
 import org.carlspring.ioc.PropertyValueInjector;
 import org.carlspring.strongbox.dao.ad.UsersDao;
-import org.carlspring.strongbox.jaas.User;
-import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.resource.ResourceCloser;
 
 import javax.naming.Context;

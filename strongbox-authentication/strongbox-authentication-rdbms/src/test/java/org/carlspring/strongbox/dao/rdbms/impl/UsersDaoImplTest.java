@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.dao.rdbms.impl;
 
 import org.carlspring.strongbox.dao.rdbms.UsersDao;
-import org.carlspring.strongbox.jaas.User;
+import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.util.encryption.EncryptionUtils;
 
 import org.junit.Test;

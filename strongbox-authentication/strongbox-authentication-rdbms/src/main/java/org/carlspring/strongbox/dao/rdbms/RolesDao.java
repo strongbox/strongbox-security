@@ -1,8 +1,8 @@
 package org.carlspring.strongbox.dao.rdbms;
 
-import org.carlspring.strongbox.jaas.Role;
-import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
-import org.carlspring.strongbox.jaas.authentication.UserStorageException;
+import org.carlspring.strongbox.security.jaas.Role;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.security.jaas.authentication.UserStorageException;
 
 /**
  * @author mtodorov

@@ -1,12 +1,11 @@
 package org.carlspring.strongbox.dao.rdbms;
 
-import org.carlspring.strongbox.jaas.Role;
-import org.carlspring.strongbox.jaas.User;
-import org.carlspring.strongbox.jaas.authentication.UserResolutionException;
-import org.carlspring.strongbox.jaas.authentication.UserResolver;
-import org.carlspring.strongbox.jaas.authentication.UserStorage;
+import org.carlspring.strongbox.security.jaas.Role;
+import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolver;
+import org.carlspring.strongbox.security.jaas.authentication.UserStorage;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 /**

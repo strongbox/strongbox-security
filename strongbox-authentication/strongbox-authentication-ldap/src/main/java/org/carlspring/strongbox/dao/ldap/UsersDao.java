@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.dao.ldap;
 
 import org.carlspring.ioc.InjectionException;
-import org.carlspring.strongbox.jaas.authentication.UserResolver;
+import org.carlspring.strongbox.security.jaas.authentication.UserResolver;
 
 /**
  * @author mtodorov

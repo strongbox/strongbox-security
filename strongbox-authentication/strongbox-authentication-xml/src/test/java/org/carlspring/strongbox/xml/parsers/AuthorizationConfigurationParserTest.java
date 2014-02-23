@@ -1,8 +1,8 @@
 package org.carlspring.strongbox.xml.parsers;
 
 import org.carlspring.strongbox.configuration.AuthorizationConfiguration;
-import org.carlspring.strongbox.jaas.Privilege;
-import org.carlspring.strongbox.jaas.Role;
+import org.carlspring.strongbox.security.jaas.Privilege;
+import org.carlspring.strongbox.security.jaas.Role;
 
 import java.io.File;
 import java.io.IOException;

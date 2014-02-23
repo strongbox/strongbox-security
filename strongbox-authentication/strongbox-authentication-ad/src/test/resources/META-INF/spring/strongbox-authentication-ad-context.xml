@@ -11,7 +11,7 @@
     <bean name="usersDao" class="org.carlspring.strongbox.dao.ad.impl.UsersDaoImpl" init-method="initialize">
     </bean>
 
-    <bean name="userResolver" class="org.carlspring.strongbox.jaas.ad.ADUserRealm">
+    <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.ad.ADUserRealm">
         <property name="usersDao" ref="usersDao"/>
     </bean>
 
