@@ -5,7 +5,7 @@ import org.carlspring.strongbox.security.jaas.Privilege;
 import org.carlspring.strongbox.security.jaas.Role;
 import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
-import org.carlspring.strongbox.xml.parsers.AuthorizationConfigurationParser;
+import org.carlspring.strongbox.xml.parsers.AuthenticationConfigurationParser;
 import org.carlspring.strongbox.xml.parsers.UserParser;
 
 import java.io.IOException;
@@ -72,11 +72,11 @@ public class AuthorizationManager
     private void loadAuthorization()
             throws IOException
     {
-        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
+        AuthenticationConfigurationParser parser = new AuthenticationConfigurationParser();
 
-        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-roles.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authorization.xml",
                                                                                    "security.roles.xml",
-                                                                                   "etc/conf/security-roles.xml");
+                                                                                   "etc/conf/security-authorization.xml");
 
         logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
 

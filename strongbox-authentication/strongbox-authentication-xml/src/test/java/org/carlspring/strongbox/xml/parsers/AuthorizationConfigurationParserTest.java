@@ -24,9 +24,9 @@ public class AuthorizationConfigurationParserTest
 
     public static final String CONFIGURATION_BASEDIR = TEST_CLASSES + "/etc/conf";
 
-    public static final String XML_FILE = CONFIGURATION_BASEDIR + "/security-roles.xml";
+    public static final String XML_FILE = CONFIGURATION_BASEDIR + "/security-authorization.xml";
 
-    public static final String XML_OUTPUT_FILE = CONFIGURATION_BASEDIR + "/security-roles-saved.xml";
+    public static final String XML_OUTPUT_FILE = CONFIGURATION_BASEDIR + "/security-authorization-saved.xml";
 
 
     @Test
@@ -37,7 +37,7 @@ public class AuthorizationConfigurationParserTest
 
         System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
 
-        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
+        AuthenticationConfigurationParser parser = new AuthenticationConfigurationParser();
         final XStream xstream = parser.getXStreamInstance();
 
         //noinspection unchecked
@@ -77,7 +77,7 @@ public class AuthorizationConfigurationParserTest
 
         System.out.println("Storing " + outputFile.getAbsolutePath() + "...");
 
-        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
+        AuthenticationConfigurationParser parser = new AuthenticationConfigurationParser();
         parser.store(configuration, outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);
