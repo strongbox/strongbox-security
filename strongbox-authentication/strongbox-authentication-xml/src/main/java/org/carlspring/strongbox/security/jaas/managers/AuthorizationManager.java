@@ -74,7 +74,7 @@ public class AuthorizationManager
         AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
 
         Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authorization.xml",
-                                                                                   "security.roles.xml",
+                                                                                   "security.authorization.xml",
                                                                                    "etc/conf/security-authorization.xml");
 
         logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
