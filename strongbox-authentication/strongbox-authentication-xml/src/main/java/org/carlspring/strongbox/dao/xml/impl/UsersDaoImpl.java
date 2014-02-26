@@ -69,11 +69,18 @@ public class UsersDaoImpl
     public void removeUser(User user)
             throws UserStorageException
     {
-        if (userManager.contains(user.getUsername()))
+        removeUser(user.getUsername());
+    }
+
+    @Override
+    public void removeUser(String username)
+            throws UserStorageException
+    {
+        if (userManager.contains(username))
         {
             try
             {
-                userManager.remove(user.getUsername());
+                userManager.remove(username);
                 userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
             }
             catch (IOException e)
@@ -83,16 +90,8 @@ public class UsersDaoImpl
         }
         else
         {
-            logger.error("Failed to remove user " + user.getUsername() + " as the user was not found in store.");
+            logger.error("Failed to remove user " + username + " as the user was not found in store.");
         }
-    }
-
-    @Deprecated
-    @Override
-    public void removeUserById(long userId)
-            throws UserStorageException
-    {
-        // TODO: Remove this method from the implemented interfaces
     }
 
     @Override
@@ -120,13 +119,20 @@ public class UsersDaoImpl
         }
     }
 
-    @Deprecated
     @Override
     public void removeRole(User user,
                            Role role)
             throws UserStorageException
     {
+        removeRole(user, role.getName());
+    }
 
+    @Override
+    public void removeRole(User user,
+                           String roleName)
+            throws UserStorageException
+    {
+        user.removeRole(roleName);
     }
 
     @Override

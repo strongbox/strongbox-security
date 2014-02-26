@@ -70,7 +70,7 @@ public class UsersDaoImplTest
                    usersDao.hasRole(user, roleName));
 
         // Delete the user
-        usersDao.removeUserById(user.getUserId());
+        usersDao.removeUser(user);
     }
 
 }

@@ -8,10 +8,7 @@ import org.carlspring.strongbox.security.jaas.authentication.UserStorageExceptio
 import org.carlspring.strongbox.security.jaas.util.RoleUtils;
 import org.carlspring.strongbox.resource.ResourceCloser;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -260,22 +257,35 @@ public class UsersDaoImpl extends BaseDaoImpl
     public void removeUser(User user)
             throws UserStorageException
     {
-        // TODO: This needs to be re-worked.
-        removeUserById(user.getUserId());
+        removeUser(user.getUsername());
     }
 
     @Override
-    public void removeUserById(long userId)
+    public void removeUser(String username)
             throws UserStorageException
     {
+        Connection connection = null;
+        PreparedStatement ps = null;
+
         try
         {
-            // TODO: This needs to be re-worked.
-            deleteById("userid", userId);
+            final String sql = "DELETE FROM " + getTableName() +
+                              "  WHERE username = ?";
+
+            connection = getConnection();
+
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.executeUpdate();
         }
         catch (SQLException e)
         {
             throw new UserStorageException(e.getMessage(), e);
+        }
+        finally
+        {
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 

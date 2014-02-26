@@ -21,13 +21,19 @@ public interface UsersDao extends UserResolver, UserStorage
     void removeUser(User user)
             throws UserStorageException;
 
-    void removeUserById(long userId)
+    void removeUser(String username)
             throws UserStorageException;
 
     void assignRole(User user, Role role)
             throws UserStorageException;
 
     void assignRole(User user, String roleName)
+            throws UserStorageException;
+
+    void removeRole(User user, Role role)
+            throws UserStorageException;
+
+    void removeRole(User user, String roleName)
             throws UserStorageException;
 
 }

@@ -22,9 +22,11 @@ public interface BaseDBDao
     long count(String whereClause)
             throws UserResolutionException;
 
+    @Deprecated
     void deleteById(String fieldIdName, long fieldIdValue)
             throws SQLException;
 
+    @Deprecated
     void deleteByWhereClause(String whereClause)
             throws SQLException;
 
