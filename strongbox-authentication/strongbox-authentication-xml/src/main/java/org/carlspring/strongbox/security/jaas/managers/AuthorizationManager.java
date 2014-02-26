@@ -5,6 +5,8 @@ import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.security.jaas.Privilege;
 import org.carlspring.strongbox.security.jaas.Role;
 import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.util.PrivilegeUtils;
+import org.carlspring.strongbox.security.jaas.util.RoleUtils;
 import org.carlspring.strongbox.xml.parsers.AuthorizationConfigurationParser;
 import org.carlspring.strongbox.xml.parsers.UserParser;
 
@@ -23,7 +25,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope ("singleton")
-public class AuthorizationManager
+public class AuthorizationManager implements ConfigurationManager
 {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationManager.class);
@@ -37,11 +39,18 @@ public class AuthorizationManager
 
     private RoleManager roleManager = new RoleManager();
 
+    @Autowired
+    private UserParser userParser;
+
+    @Autowired
+    private AuthorizationConfigurationParser authorizationConfigurationParser;
+
 
     public AuthorizationManager()
     {
     }
 
+    @Override
     public void load()
             throws IOException
     {
@@ -52,8 +61,6 @@ public class AuthorizationManager
     private void loadUsers()
             throws IOException
     {
-        UserParser parser = new UserParser();
-
         Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-users.xml",
                                                                                    "security.users.xml",
                                                                                    "etc/conf/security-users.xml");
@@ -61,7 +68,7 @@ public class AuthorizationManager
         logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
 
         //noinspection unchecked
-        List<User> users = (List<User>) parser.parse(resource.getInputStream());
+        List<User> users = (List<User>) userParser.parse(resource.getInputStream());
         for (User user : users)
         {
             userManager.add(user);
@@ -89,6 +96,38 @@ public class AuthorizationManager
         {
             roleManager.add(role.getName(), role);
         }
+    }
+
+    @Override
+    public void store()
+            throws IOException
+    {
+        storeUsers();
+        storeAuthorization();
+    }
+
+    private void storeUsers()
+            throws IOException
+    {
+        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-users.xml",
+                                                                                   "security.users.xml",
+                                                                                   "etc/conf/security-users.xml");
+
+        userParser.store(userManager.getUsersAsList(), resource.getFile().getAbsoluteFile());
+    }
+
+    private void storeAuthorization()
+            throws IOException
+    {
+        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authorization.xml",
+                                                                                   "security.authorization.xml",
+                                                                                   "etc/conf/security-authorization.xml");
+
+        AuthorizationConfiguration configuration = new AuthorizationConfiguration();
+        configuration.setPrivileges(PrivilegeUtils.toList(privilegeManager.getPrivileges().values()));
+        configuration.setRoles(RoleUtils.toList(roleManager.getRoles().values()));
+
+        authorizationConfigurationParser.store(configuration, resource.getFile().getAbsoluteFile());
     }
 
     public UserManager getUserManager()

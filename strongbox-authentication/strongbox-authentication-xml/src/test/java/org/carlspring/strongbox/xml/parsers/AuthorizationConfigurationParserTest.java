@@ -37,7 +37,7 @@ public class AuthorizationConfigurationParserTest
 
         System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
 
-        AuthenticationConfigurationParser parser = new AuthenticationConfigurationParser();
+        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
         final XStream xstream = parser.getXStreamInstance();
 
         //noinspection unchecked
@@ -77,7 +77,7 @@ public class AuthorizationConfigurationParserTest
 
         System.out.println("Storing " + outputFile.getAbsolutePath() + "...");
 
-        AuthenticationConfigurationParser parser = new AuthenticationConfigurationParser();
+        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
         parser.store(configuration, outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);

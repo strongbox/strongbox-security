@@ -1,12 +1,12 @@
 package org.carlspring.strongbox.dao.xml.impl;
 
 import org.carlspring.strongbox.dao.xml.UsersDao;
+import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.security.jaas.Role;
 import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.security.jaas.authentication.UserStorageException;
 import org.carlspring.strongbox.security.jaas.managers.UserManager;
-import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.xml.parsers.UserParser;
 
 import java.io.IOException;
@@ -133,6 +133,7 @@ public class UsersDaoImpl
     public User findUser(long userId)
             throws UserResolutionException
     {
+        // TODO: Remove this method from the implemented interfaces
         return null;
     }
 
@@ -159,9 +160,9 @@ public class UsersDaoImpl
 
     @Override
     public long count()
-            throws UserStorageException
+            throws UserResolutionException
     {
-        return 0;
+        return userManager.getUsers().size();
     }
 
     public UserParser getUserParser()

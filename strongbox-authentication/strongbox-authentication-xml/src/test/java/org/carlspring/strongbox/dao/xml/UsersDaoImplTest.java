@@ -53,7 +53,7 @@ public class UsersDaoImplTest
 
         usersDao.updateUser(user);
 
-        final User updatedUser = usersDao.findUser(USERNAME, changedPassword);
+        User updatedUser = usersDao.findUser(USERNAME, changedPassword);
 
         assertEquals("Failed to update the user!", changedPassword, updatedUser.getPassword());
 
@@ -61,12 +61,14 @@ public class UsersDaoImplTest
 
         // Test roles
         String roleName = "ADMINISTRATOR";
-        assertFalse("This user is already an administrator!", usersDao.hasRole(user, roleName));
+        assertFalse("This user is already an administrator!", user.hasRole(roleName));
 
         usersDao.assignRole(user, roleName);
 
+        updatedUser = usersDao.findUser(USERNAME);
+
         assertTrue("Failed to assign role 'ADMINISTRATOR' to user '" + USERNAME + "'",
-                   usersDao.hasRole(user, roleName));
+                   updatedUser.hasRole(roleName));
 
         // Delete the user
         usersDao.removeUserById(user.getUserId());
