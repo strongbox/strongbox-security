@@ -132,7 +132,15 @@ public class UsersDaoImpl
                            String roleName)
             throws UserStorageException
     {
-        user.removeRole(roleName);
+        try
+        {
+            user.removeRole(roleName);
+            userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+        }
+        catch (IOException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
     }
 
     @Override
