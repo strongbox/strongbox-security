@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
  */
 // @RunWith(SpringJUnit4ClassRunner.class)
 // @ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserParserTest
 {
 
@@ -35,7 +34,7 @@ public class UserParserTest
 
 
     @Test
-    public void test01StoreUsers()
+    public void testStoreUsers()
             throws IOException
     {
         List<User> users = new ArrayList<User>();
@@ -54,7 +53,7 @@ public class UserParserTest
     }
 
     @Test
-    public void test02ParseUsers()
+    public void testParseUsers()
             throws IOException
     {
         File xmlFile = new File(XML_FILE);
