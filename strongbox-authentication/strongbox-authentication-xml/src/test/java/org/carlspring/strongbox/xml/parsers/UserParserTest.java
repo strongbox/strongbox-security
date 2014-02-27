@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -19,6 +21,7 @@ import static org.junit.Assert.assertTrue;
  */
 // @RunWith(SpringJUnit4ClassRunner.class)
 // @ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserParserTest
 {
 
@@ -32,25 +35,7 @@ public class UserParserTest
 
 
     @Test
-    public void testParseUsers()
-            throws IOException
-    {
-        File xmlFile = new File(XML_FILE);
-
-        System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
-
-        UserParser parser = new UserParser();
-        final XStream xstream = parser.getXStreamInstance();
-
-        //noinspection unchecked
-        final List<User> users = (List<User>) xstream.fromXML(xmlFile);
-
-        assertTrue("Failed to parse any users!", users != null);
-        assertFalse("Failed to parse any users!", users.isEmpty());
-    }
-
-    @Test
-    public void testStoreUsers()
+    public void test01StoreUsers()
             throws IOException
     {
         List<User> users = new ArrayList<User>();
@@ -66,6 +51,24 @@ public class UserParserTest
         parser.store(users, outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);
+    }
+
+    @Test
+    public void test02ParseUsers()
+            throws IOException
+    {
+        File xmlFile = new File(XML_FILE);
+
+        System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
+
+        UserParser parser = new UserParser();
+        final XStream xstream = parser.getXStreamInstance();
+
+        //noinspection unchecked
+        final List<User> users = (List<User>) xstream.fromXML(xmlFile);
+
+        assertTrue("Failed to parse any users!", users != null);
+        assertFalse("Failed to parse any users!", users.isEmpty());
     }
 
     private User createUser(String username, String password, String... roles)
