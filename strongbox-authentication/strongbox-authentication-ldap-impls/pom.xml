@@ -12,4 +12,9 @@
 
     <name>Strongbox Authentication: LDAP [Implementations]</name>
 
+    <modules>
+        <module>strongbox-authentication-ldap</module>
+        <module>strongbox-authentication-ad</module>
+    </modules>
+
 </project>

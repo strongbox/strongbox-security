@@ -16,8 +16,7 @@
         <module>strongbox-authentication-core</module>
         <module>strongbox-authentication-xml</module>
         <module>strongbox-authentication-rdbms</module>
-        <module>strongbox-authentication-ldap</module>
-        <module>strongbox-authentication-ad</module>
+        <module>strongbox-authentication-ldap-impls</module>
         <!--module>strongbox-authentication-token</module-->
         <!--module>strongbox-authentication-ntlm</module-->
     </modules>
