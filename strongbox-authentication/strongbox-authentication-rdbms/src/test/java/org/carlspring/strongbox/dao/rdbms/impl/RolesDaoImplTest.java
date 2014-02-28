@@ -43,9 +43,9 @@ public class RolesDaoImplTest
         Role createdRole = rolesDao.findRole(ROLE_NAME);
 
         assertNotNull("Failed to lookup role!", createdRole);
-        assertTrue("Failed to lookup role!", createdRole.getRoleId() > 0);
+        assertNotNull("Failed to lookup role!", createdRole.getName());
 
-        System.out.println("roleid: " + createdRole.getRoleId());
+        System.out.println("role_name: " + createdRole.getName());
 
         // Update
         role = rolesDao.findRole(ROLE_NAME);

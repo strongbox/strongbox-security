@@ -16,9 +16,9 @@ INSERT INTO roles (role_name, description) VALUES ('PUT', 'Upload artifacts');
 INSERT INTO roles (role_name, description) VALUES ('DELETE', 'Delete artifacts');
 
 -- Admin user
-INSERT INTO user_roles VALUES (1, 1);
+INSERT INTO user_roles VALUES ('admin', 'ADMINISTRATOR');
 -- Admin user must have USER role
-INSERT INTO user_roles VALUES (1, 2);
+INSERT INTO user_roles VALUES ('admin', 'USER');
 -- A regular user.
-INSERT INTO user_roles VALUES (2, 2);
+INSERT INTO user_roles VALUES ('testuser', 'USER');
 

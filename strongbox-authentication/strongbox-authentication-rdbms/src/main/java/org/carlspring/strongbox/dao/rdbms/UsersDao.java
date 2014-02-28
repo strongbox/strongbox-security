@@ -17,7 +17,7 @@ public interface UsersDao extends BaseDBDao, UserResolver, UserStorage
     Set<Role> getRoles(User user)
             throws UserResolutionException;
 
-    boolean hasRole(User user, String roleName)
+    boolean hasRole(String username, String roleName)
             throws UserResolutionException;
 
 }

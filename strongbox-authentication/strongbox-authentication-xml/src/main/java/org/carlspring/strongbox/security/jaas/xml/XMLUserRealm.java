@@ -1,6 +1,5 @@
 package org.carlspring.strongbox.security.jaas.xml;
 
-import org.carlspring.ioc.InjectionException;
 import org.carlspring.strongbox.dao.xml.UsersDao;
 import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
@@ -20,13 +19,6 @@ public class XMLUserRealm
     @Autowired
     private UsersDao usersDao;
 
-
-    @Override
-    public User findUser(long userId)
-            throws UserResolutionException
-    {
-        return getUsersDao().findUser(userId);
-    }
 
     @Override
     public User findUser(String username)

@@ -21,13 +21,6 @@ public class RDBMSUserRealm
 
 
     @Override
-    public User findUser(long userId)
-            throws UserResolutionException
-    {
-        return usersDao.findUser(userId);
-    }
-
-    @Override
     public User findUser(String username)
             throws UserResolutionException
     {

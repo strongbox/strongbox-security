@@ -14,9 +14,6 @@ public interface RolesDao
     void createRole(Role role)
             throws UserStorageException;
 
-    Role findRole(long roleId)
-            throws UserResolutionException;
-
     Role findRole(String name)
             throws UserResolutionException;
 

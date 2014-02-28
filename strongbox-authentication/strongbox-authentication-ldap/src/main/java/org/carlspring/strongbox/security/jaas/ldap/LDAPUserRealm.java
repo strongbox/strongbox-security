@@ -22,23 +22,6 @@ public class LDAPUserRealm
 
 
     @Override
-    public User findUser(long userId)
-            throws UserResolutionException
-    {
-        User user = null;
-        try
-        {
-            user = getUsersDao().findUser(userId);
-        }
-        catch (InjectionException e)
-        {
-            throw new UserResolutionException(e.getMessage(), e);
-        }
-
-        return user;
-    }
-
-    @Override
     public User findUser(String username)
             throws UserResolutionException
     {

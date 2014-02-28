@@ -43,7 +43,7 @@ public class RolesDaoImpl
 
         try
         {
-            final String sql = "INSERT INTO roles (roleid, role_name, description) VALUES (DEFAULT, ?, ?)";
+            final String sql = "INSERT INTO roles (role_name, description) VALUES (?, ?)";
 
             connection = getConnection();
 
@@ -62,47 +62,6 @@ public class RolesDaoImpl
             ResourceCloser.close(ps, logger);
             ResourceCloser.close(connection, logger);
         }
-    }
-
-    @Override
-    public Role findRole(long roleId)
-            throws UserResolutionException
-    {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        Role role = null;
-        ResultSet rs;
-
-        try
-        {
-            final String sql = "SELECT * FROM roles WHERE roleid = ?";
-
-            connection = getConnection();
-
-            ps = connection.prepareStatement(sql);
-            ps.setLong(1, roleId);
-            rs = ps.executeQuery();
-
-            if (rs.next())
-            {
-                role = new Role();
-                // TODO: This needs to be removed:
-                role.setRoleId(rs.getLong("roleid"));
-                role.setName(rs.getString("role_name"));
-                role.setDescription(rs.getString("description"));
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new UserResolutionException(e.getMessage(), e);
-        }
-        finally
-        {
-            ResourceCloser.close(ps, logger);
-            ResourceCloser.close(connection, logger);
-        }
-
-        return role;
     }
 
     @Override
@@ -127,7 +86,6 @@ public class RolesDaoImpl
             if (rs.next())
             {
                 role = new Role();
-                role.setRoleId(rs.getLong("ROLEID"));
                 role.setName(rs.getString("ROLE_NAME"));
                 role.setDescription(rs.getString("DESCRIPTION"));
             }
@@ -155,16 +113,14 @@ public class RolesDaoImpl
         try
         {
             final String sql = "UPDATE roles" +
-                               "   SET role_name = ?," +
-                               "       description = ?" +
-                               " WHERE roleid = ?";
+                               "   SET description = ?" +
+                               " WHERE role_name = ?";
 
             connection = getConnection();
 
             ps = connection.prepareStatement(sql);
-            ps.setString(1, role.getName());
-            ps.setString(2, role.getDescription());
-            ps.setLong(3, role.getRoleId());
+            ps.setString(1, role.getDescription());
+            ps.setString(2, role.getName());
             ps.executeUpdate();
         }
         catch (SQLException e)

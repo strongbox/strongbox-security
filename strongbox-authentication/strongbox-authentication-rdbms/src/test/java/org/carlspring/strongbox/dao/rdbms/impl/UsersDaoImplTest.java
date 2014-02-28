@@ -62,12 +62,12 @@ public class UsersDaoImplTest
 
         // Test roles
         String roleName = "ADMINISTRATOR";
-        assertFalse("This user is already an administrator!", usersDao.hasRole(user, roleName));
+        assertFalse("This user is already an administrator!", usersDao.hasRole(user.getUsername(), roleName));
 
         usersDao.assignRole(user, roleName);
 
         assertTrue("Failed to assign role 'ADMINISTRATOR' to user '" + USERNAME + "'",
-                   usersDao.hasRole(user, roleName));
+                   usersDao.hasRole(user.getUsername(), roleName));
 
         // Delete the user
         usersDao.removeUser(user);

@@ -63,13 +63,6 @@ public class UsersDaoImpl
     }
 
     @Override
-    public User findUser(long userId)
-            throws UserResolutionException
-    {
-        return null;
-    }
-
-    @Override
     public User findUser(String username)
             throws UserResolutionException
     {

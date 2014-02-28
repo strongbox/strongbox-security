@@ -144,14 +144,6 @@ public class UsersDaoImpl
     }
 
     @Override
-    public User findUser(long userId)
-            throws UserResolutionException
-    {
-        // TODO: Remove this method from the implemented interfaces
-        return null;
-    }
-
-    @Override
     public User findUser(String username)
             throws UserResolutionException
     {

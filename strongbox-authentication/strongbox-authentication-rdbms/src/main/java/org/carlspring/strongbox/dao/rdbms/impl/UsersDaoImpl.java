@@ -44,7 +44,7 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             // TODO: This needs to be re-worked:
-            final String sql = "INSERT INTO users (userid, username, password) VALUES (DEFAULT, ?, ?)";
+            final String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
 
             connection = getConnection();
 
@@ -66,56 +66,6 @@ public class UsersDaoImpl extends BaseDaoImpl
             ResourceCloser.close(preparedStatement, logger);
             ResourceCloser.close(connection, logger);
         }
-    }
-
-    /**
-     * TODO: This needs to be removed
-     *
-     * @param userId
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public User findUser(long userId)
-            throws UserResolutionException
-    {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        User user = null;
-        ResultSet rs;
-
-        try
-        {
-            final String sql = "SELECT *" +
-                               "  FROM users" +
-                               " WHERE userid = ?";
-
-            connection = getConnection();
-
-            ps = connection.prepareStatement(sql);
-            ps.setLong(1, userId);
-            rs = ps.executeQuery();
-
-            if (rs.next())
-            {
-                user = new User();
-                user.setUserId(rs.getLong("userid"));
-                user.setUsername(rs.getString("username"));
-                user.setPassword(rs.getString("password"));
-                user.setRoles(RoleUtils.toStringList(getRoles(user)));
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new UserResolutionException(e.getMessage(), e);
-        }
-        finally
-        {
-            ResourceCloser.close(ps, logger);
-            ResourceCloser.close(connection, logger);
-        }
-
-        return user;
     }
 
     @Override
@@ -149,7 +99,6 @@ public class UsersDaoImpl extends BaseDaoImpl
             if (rs.next())
             {
                 user = new User();
-                user.setUserId(rs.getInt("userid"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setRoles(RoleUtils.toStringList(getRoles(user)));
@@ -193,8 +142,6 @@ public class UsersDaoImpl extends BaseDaoImpl
             if (rs.next())
             {
                 user = new User();
-                // TODO: This needs to be removed:
-                user.setUserId(rs.getInt("userid"));
                 user.setUsername(rs.getString("username"));
                 user.setPassword(rs.getString("password"));
                 user.setRoles(RoleUtils.toStringList(getRoles(user)));
@@ -269,47 +216,22 @@ public class UsersDaoImpl extends BaseDaoImpl
 
         try
         {
-            final String sql = "DELETE FROM " + getTableName() +
-                              "  WHERE username = ?";
+            // TODO: Replace this with proper cascading via Hibernate, JPA, or something else:
+            final String sql1 = "DELETE FROM user_roles" +
+                                "  WHERE username = ?";
 
             connection = getConnection();
 
-            ps = connection.prepareStatement(sql);
+            ps = connection.prepareStatement(sql1);
             ps.setString(1, username);
             ps.executeUpdate();
-        }
-        catch (SQLException e)
-        {
-            throw new UserStorageException(e.getMessage(), e);
-        }
-        finally
-        {
-            ResourceCloser.close(ps, logger);
-            ResourceCloser.close(connection, logger);
-        }
-    }
 
-    @Override
-    public void assignRole(User user, String roleName)
-            throws UserStorageException
-    {
-        Connection connection = null;
-        PreparedStatement ps = null;
+            final String sql2 = "DELETE FROM " + getTableName() +
+                              "  WHERE username = ?";
 
-        try
-        {
-            final String sql = "INSERT INTO user_roles (userid, roleid) " +
-                               "VALUES (?, (SELECT ROLEID FROM ROLES WHERE ROLE_NAME = ?))";
-
-            logger.debug(sql);
-
-            connection = getConnection();
-
-            ps = connection.prepareStatement(sql);
-            ps.setLong(1, user.getUserId());
-            ps.setString(2, roleName);
-
-            ps.execute();
+            ps = connection.prepareStatement(sql2);
+            ps.setString(1, username);
+            ps.executeUpdate();
         }
         catch (SQLException e)
         {
@@ -326,20 +248,28 @@ public class UsersDaoImpl extends BaseDaoImpl
     public void assignRole(User user, Role role)
             throws UserStorageException
     {
+        assignRole(user, role.getName());
+    }
+
+    @Override
+    public void assignRole(User user, String roleName)
+            throws UserStorageException
+    {
         Connection connection = null;
         PreparedStatement ps = null;
 
         try
         {
-            final String sql = "INSERT INTO user_roles (userid, roleid) VALUES (?, ?)";
+            final String sql = "INSERT INTO user_roles (username, role_name) " +
+                               "VALUES (?, ?)";
 
             logger.debug(sql);
 
             connection = getConnection();
 
             ps = connection.prepareStatement(sql);
-            ps.setLong(1, user.getUserId());
-            ps.setLong(2, role.getRoleId());
+            ps.setString(1, user.getUsername());
+            ps.setString(2, roleName);
 
             ps.execute();
         }
@@ -366,24 +296,22 @@ public class UsersDaoImpl extends BaseDaoImpl
 
         try
         {
-            final String sql = "SELECT u.userid, r.roleid, r.role_name, r.description " +
+            final String sql = "SELECT u.username, r.role_name, r.description " +
                                "  FROM users u, user_roles ur, roles r " +
-                               " WHERE u.userid = ur.userid " +
-                               "   AND r.roleid = ur.roleid " +
-                               "   AND u.userid = ?";
+                               " WHERE u.username = ur.username " +
+                               "   AND r.role_name = ur.role_name" +
+                               "   AND u.username = ?";
 
             connection = getConnection();
 
             ps = connection.prepareStatement(sql);
-            ps.setLong(1, user.getUserId());
+            ps.setString(1, user.getUsername());
 
             rs = ps.executeQuery();
 
             while (rs.next())
             {
                 Role role = new Role();
-
-                role.setRoleId(rs.getLong("roleid"));
                 role.setName(rs.getString("role_name"));
                 role.setDescription(rs.getString("description"));
 
@@ -408,14 +336,30 @@ public class UsersDaoImpl extends BaseDaoImpl
     public void removeRole(User user, Role role)
             throws UserStorageException
     {
+        Connection connection = null;
+        PreparedStatement ps = null;
+
         try
         {
-            // TODO: This needs to be re-worked.
-            deleteByWhereClause("userid = " +user.getUserId() +" AND roleid = " +role.getRoleId());
+            final String sql = "DELETE FROM user_roles" +
+                              "  WHERE username = ? " +
+                              "    AND role_name = ?";
+
+            connection = getConnection();
+
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, user.getUsername());
+            ps.setString(2, role.getName());
+            ps.executeUpdate();
         }
         catch (SQLException e)
         {
             throw new UserStorageException(e.getMessage(), e);
+        }
+        finally
+        {
+            ResourceCloser.close(ps, logger);
+            ResourceCloser.close(connection, logger);
         }
     }
 
@@ -428,7 +372,7 @@ public class UsersDaoImpl extends BaseDaoImpl
      * @throws SQLException
      */
     @Override
-    public boolean hasRole(User user, String roleName)
+    public boolean hasRole(String username, String roleName)
             throws UserResolutionException
     {
         boolean hasRole = false;
@@ -439,17 +383,17 @@ public class UsersDaoImpl extends BaseDaoImpl
 
         try
         {
-            final String sql = "SELECT COUNT(u.userid) " +
+            final String sql = "SELECT COUNT(u.username) " +
                                "  FROM users u, user_roles ur, roles r" +
-                               " WHERE u.userid = ur.userid " +
-                               "   AND r.roleid = ur.roleid " +
-                               "   AND u.userid = ? " +
+                               " WHERE u.username = ur.username " +
+                               "   AND r.role_name = ur.role_name " +
+                               "   AND u.username = ? " +
                                "   AND r.role_name = ?";
 
             connection = getConnection();
 
             ps = connection.prepareStatement(sql);
-            ps.setLong(1, user.getUserId());
+            ps.setString(1, username);
             ps.setString(2, roleName);
 
             rs = ps.executeQuery();
