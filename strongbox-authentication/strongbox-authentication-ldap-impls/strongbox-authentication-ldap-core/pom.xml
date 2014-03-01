@@ -12,9 +12,9 @@
         <relativePath/>
     </parent>
 
-    <artifactId>strongbox-authentication-ldap</artifactId>
+    <artifactId>strongbox-authentication-ldap-core</artifactId>
 
-    <name>Strongbox Authentication: LDAP</name>
+    <name>Strongbox Authentication: LDAP [Core]</name>
 
     <build>
         <plugins>
@@ -91,11 +91,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>strongbox-authentication-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>strongbox-authentication-ldap-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

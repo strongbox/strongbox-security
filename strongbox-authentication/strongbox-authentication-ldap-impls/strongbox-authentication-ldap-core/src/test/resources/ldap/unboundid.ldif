@@ -1,0 +1,89 @@
+
+dn: dc=carlspring,dc=com
+objectClass: top
+objectClass: domain
+dc: carlspring
+
+dn: cn=Users,dc=carlspring,dc=com
+changetype: add
+objectClass: posixGroup
+objectClass: top
+cn: Users
+gidNumber: 1001
+
+# Create users
+dn: cn=Martin Todorov,cn=Users,dc=carlspring,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+cn: Martin Todorov
+givenName: Martin
+sn: Todorov
+homeDirectory: /home/mtodorov
+gidNumber: 1000
+uid: mtodorov
+uidNumber: 1001
+userPassword: password
+mail: mtodorov@carlspring.org
+memberOf: cn=Administrators,ou=Groups,dc=carlspring,dc=com
+memberOf: cn=Managers,ou=Groups,dc=carlspring,dc=com
+
+dn: cn=Steve Todorov,cn=Users,dc=carlspring,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+cn: Steve Todorov
+givenName: Steve
+sn: Todorov
+homeDirectory: /home/stodorov
+gidNumber: 1000
+uid: stodorov
+uidNumber: 1002
+userPassword: password
+mail: stodorov@carlspring.org
+
+dn: cn=Test User1,cn=Users,dc=carlspring,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+cn: Test User1
+givenName: Test
+sn: User1
+homeDirectory: /home/testuser1
+gidNumber: 1000
+uid: testuser1
+uidNumber: 1003
+userPassword: password
+
+# Create groups
+dn: ou=Groups,dc=carlspring,dc=com
+changetype: add
+objectclass: top
+objectclass: organizationalUnit
+cn: Groups
+ou: Groups
+
+dn: cn=Administrators,ou=Groups,dc=carlspring,dc=com
+changetype: add
+objectclass: top
+objectclass: groupOfNames
+member: cn=Martin Todorov,uid=mtodorov,ou=People,dc=carlspring,dc=com
+member: cn=Steve Todorov,uid=mtodorov,ou=People,dc=carlspring,dc=com
+cn: Administrators
+
+dn: cn=Managers,ou=Groups,dc=carlspring,dc=com
+changetype: add
+objectclass: top
+objectclass: groupOfNames
+member: cn=Martin Todorov,uid=mtodorov,ou=People,dc=carlspring,dc=com
+cn: Managers
+
+dn: cn=Senior Staff,ou=Groups,dc=carlspring,dc=com
+changetype: add
+objectclass: top
+objectclass: groupOfNames
+member: cn=Managers,ou=Groups,dc=carlspring,dc=com
+cn: Managers

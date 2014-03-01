@@ -1,0 +1,12 @@
+<ldap-configuration>
+    
+    <host>localhost</host>
+    <port>40636</port>
+    <protocol>ldaps</protocol>
+    <username>admin</username>
+    <password>password</password>
+    <rootDn>dc=carlspring,dc=com</rootDn>
+    <timeout>30000</timeout>
+    <anonymousBind>true</anonymousBind>
+    
+</ldap-configuration>

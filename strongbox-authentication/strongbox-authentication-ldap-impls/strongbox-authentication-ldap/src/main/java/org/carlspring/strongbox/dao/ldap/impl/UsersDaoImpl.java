@@ -1,65 +1,44 @@
 package org.carlspring.strongbox.dao.ldap.impl;
 
-import org.carlspring.ioc.InjectionException;
-import org.carlspring.ioc.PropertiesResources;
-import org.carlspring.ioc.PropertyValue;
-import org.carlspring.ioc.PropertyValueInjector;
-import org.carlspring.strongbox.dao.ldap.UsersDao;
+import org.carlspring.strongbox.configuration.LDAPConfiguration;
+import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
+import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
-import org.carlspring.strongbox.resource.ResourceCloser;
+import org.carlspring.strongbox.xml.parsers.LDAPConfigurationParser;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
-import java.util.*;
+
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 
 
 /**
  * @author mtodorov
  */
-@PropertiesResources(resources = { "META-INF/properties/ldap.properties" })
-public class UsersDaoImpl
-        implements UsersDao
+public class UsersDaoImpl extends AbstractUsersDaoImpl
 {
 
     private static final Logger logger = LoggerFactory.getLogger(UsersDaoImpl.class);
 
-    @PropertyValue(key = "ldap.host")
-    private String host;
+    @Autowired
+    private ConfigurationResourceResolver configurationResourceResolver;
 
-    @PropertyValue(key = "ldap.port")
-    private int port;
+    @Autowired
+    private LDAPConfigurationParser ldapConfigurationParser;
 
-    @PropertyValue(key = "ldap.protocol")
-    private String protocol;
-
-    @PropertyValue(key = "ldap.username")
-    private String username;
-
-    @PropertyValue(key = "ldap.password")
-    private String password;
-
-    @PropertyValue(key = "ldap.root.dn")
-    private String rootDn;
-
-    @PropertyValue(key = "ldap.timeout")
-    private int timeout;
+    private LDAPConfiguration ldapConfiguration;
 
 
     public UsersDaoImpl()
     {
-    }
-
-    @Override
-    public void initialize()
-            throws InjectionException
-    {
-        PropertyValueInjector.inject(this);
     }
 
     @Override
@@ -69,12 +48,6 @@ public class UsersDaoImpl
         return null;
     }
 
-    /**
-     * @param uid
-     * @param password
-     * @return
-     * @throws Exception
-     */
     @Override
     public User findUser(String uid, String password)
             throws UserResolutionException
@@ -105,14 +78,16 @@ public class UsersDaoImpl
 
             SearchControls controls = getSearchControls(attrIDs);
             controls.setReturningAttributes(attrIDs);
-            controls.setTimeLimit(timeout);
+            controls.setTimeLimit(getTimeout());
 
-            results = ctx.search(rootDn, filter, new String[]{ uid, password }, controls);
+            results = ctx.search(getRootDn(), filter, new String[]{ uid, password }, controls);
 
             // String uid = null;
             String firstName = null;
             String lastName = null;
             String email = null;
+
+            String rootDn = null;
 
             Attributes attributes = null;
             if (results.hasMore())
@@ -175,90 +150,25 @@ public class UsersDaoImpl
         return user;
     }
 
-    private InitialDirContext getContext()
-            throws NamingException
+    public void load()
+            throws IOException
     {
-        Hashtable<String, String> env = new Hashtable<String, String>();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-        env.put(Context.PROVIDER_URL, protocol + "://" + host + ":" + port + "/");
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authentication-ldap.xml",
+                                                                                   "security.users.xml",
+                                                                                   "etc/conf/security-authentication-ldap.xml");
 
-        if (protocol.equalsIgnoreCase("ldaps"))
-        {
-            env.put(Context.SECURITY_PROTOCOL, "ssl");
-        }
+        logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
 
-        return new InitialDirContext(env);
+        ldapConfiguration = ldapConfigurationParser.parse(resource.getInputStream());
     }
 
-    private SearchControls getSearchControls(String[] attrIDs)
+    public LDAPConfiguration getLdapConfiguration()
     {
-        SearchControls controls = new SearchControls();
-        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        controls.setReturningAttributes(attrIDs);
-        controls.setReturningObjFlag(true);
-
-        return controls;
+        return ldapConfiguration;
     }
 
-    public String getHost()
+    public void setLdapConfiguration(LDAPConfiguration ldapConfiguration)
     {
-        return host;
+        this.ldapConfiguration = ldapConfiguration;
     }
-
-    public void setHost(String host)
-    {
-        this.host = host;
-    }
-
-    public int getPort()
-    {
-        return port;
-    }
-
-    public void setPort(int port)
-    {
-        this.port = port;
-    }
-
-    public String getProtocol()
-    {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol)
-    {
-        this.protocol = protocol;
-    }
-
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
-    {
-        this.username = username;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
-
-    public int getTimeout()
-    {
-        return timeout;
-    }
-
-    public void setTimeout(int timeout)
-    {
-        this.timeout = timeout;
-    }
-
 }
