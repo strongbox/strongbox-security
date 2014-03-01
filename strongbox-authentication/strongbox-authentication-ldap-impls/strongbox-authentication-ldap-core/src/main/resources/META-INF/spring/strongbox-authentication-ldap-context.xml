@@ -8,10 +8,6 @@
     <context:annotation-config />
     <context:component-scan base-package="org.carlspring.strongbox" />
 
-    <bean name="usersDao" class="org.carlspring.strongbox.dao.ldap.impl.UsersDaoImpl" init-method="load" />
-
-    <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.ldap.LDAPUserRealm">
-        <property name="usersDao" ref="usersDao"/>
-    </bean>
+    <bean name="ldapConfigurationParser" class="org.carlspring.strongbox.xml.parsers.LDAPConfigurationParser" />
 
 </beans>
