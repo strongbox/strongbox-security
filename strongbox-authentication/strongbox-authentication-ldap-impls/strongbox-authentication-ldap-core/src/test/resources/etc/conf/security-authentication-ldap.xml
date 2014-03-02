@@ -5,7 +5,8 @@
     <protocol>ldaps</protocol>
     <username>admin</username>
     <password>password</password>
-    <anonymousBind>true</anonymousBind>
+    <!-- TODO: Change this to "principal" when testing against a real Active Directory server -->
+    <loginMode>anonymous</loginMode>
     <timeout>30000</timeout>
     <rootDn>dc=carlspring,dc=com</rootDn>
 

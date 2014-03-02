@@ -178,4 +178,10 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
         this.ldapConfiguration = ldapConfiguration;
     }
 
+    @Override
+    public String getDomain()
+    {
+        return ldapConfiguration.getDomain();
+    }
+
 }

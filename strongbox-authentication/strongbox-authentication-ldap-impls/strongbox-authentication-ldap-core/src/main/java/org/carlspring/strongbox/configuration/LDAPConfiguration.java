@@ -35,8 +35,17 @@ public class LDAPConfiguration implements Serializable
     @XStreamAlias(value = "timeout")
     private int timeout = 30000;
 
-    @XStreamAlias(value = "anonymousBind")
-    private boolean anonymousBind = true;
+    @XStreamAlias(value = "domain")
+    private String domain;
+
+    /**
+     * The supported login modes are:
+     * - anonymous bind (anonymous)
+     * - username/password (username)
+     * - principal/password (principal)
+     */
+    @XStreamAlias(value = "loginMode")
+    private String loginMode;
 
     @XStreamAlias(value = "attribute-mappings")
     private AttributeMappings attributeMappings;
@@ -118,17 +127,37 @@ public class LDAPConfiguration implements Serializable
 
     public boolean shouldBindAnonymously()
     {
-        return anonymousBind;
+        return loginMode == null || loginMode.equalsIgnoreCase("anonymous");
     }
 
-    public void setAnonymousBind(boolean anonymousBind)
+    public boolean shouldBindWithUsernameAndPassword()
     {
-        this.anonymousBind = anonymousBind;
+        return loginMode != null && loginMode.equalsIgnoreCase("username");
     }
 
-    public boolean isAnonymousBind()
+    public boolean shouldBindWithPrincipal()
     {
-        return anonymousBind;
+        return loginMode != null && loginMode.equalsIgnoreCase("principal") && domain != null;
+    }
+
+    public String getDomain()
+    {
+        return domain;
+    }
+
+    public void setDomain(String domain)
+    {
+        this.domain = domain;
+    }
+
+    public String getLoginMode()
+    {
+        return loginMode;
+    }
+
+    public void setLoginMode(String loginMode)
+    {
+        this.loginMode = loginMode;
     }
 
     public AttributeMappings getAttributeMappings()

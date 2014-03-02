@@ -34,7 +34,7 @@ public abstract class AbstractUsersDaoImpl
      * @return
      * @throws NamingException
      */
-    private InitialDirContext getContextAnonymously()
+    public InitialDirContext getContextAnonymously()
             throws NamingException
     {
         Hashtable<String, String> env = new Hashtable<String, String>();
@@ -50,7 +50,31 @@ public abstract class AbstractUsersDaoImpl
         return new InitialDirContext(env);
     }
 
-    private InitialDirContext getContext(String username, String password)
+    public InitialDirContext getContextViaPrincipal(String username, String password)
+            throws NamingException
+    {
+        Hashtable<String, String> env = new Hashtable<String, String>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.PROVIDER_URL, getProtocol() + "://" + getHost() + ":" + getPort() + "/");
+        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+
+        // Check here for some explanations:
+        // - https://weblogs.java.net/blog/kohsuke/archive/2008/06/more_active_dir.html
+        // - http://docs.alfresco.com/4.2/index.jsp?topic=%2Fcom.alfresco.enterprise.doc%2Fconcepts%2Fauth-ldap-props.html
+        String principal = username +"@" + getDomain();
+
+        env.put(Context.SECURITY_PRINCIPAL, principal);
+        env.put(Context.SECURITY_CREDENTIALS, password);
+
+        if (getProtocol().equalsIgnoreCase("ldaps"))
+        {
+            env.put(Context.SECURITY_PROTOCOL, "ssl");
+        }
+
+        return new InitialDirContext(env);
+    }
+
+    public InitialDirContext getContext(String username, String password)
             throws NamingException
     {
         Hashtable<String, String> env = new Hashtable<String, String>();
@@ -68,16 +92,20 @@ public abstract class AbstractUsersDaoImpl
         return new InitialDirContext(env);
     }
 
-    protected InitialDirContext getContext()
+    public InitialDirContext getContext()
             throws NamingException
     {
-        if (shouldBindAnonymously())
+        if (shouldBindWithUsernameAndPassword())
         {
-            return getContextAnonymously();
+            return getContext(getUsername(), getPassword());
+        }
+        else if (shouldBindWithPrincipal())
+        {
+            return getContextViaPrincipal(getUsername(), getPassword());
         }
         else
         {
-            return getContext(getUsername(), getPassword());
+            return getContextAnonymously();
         }
     }
 
@@ -134,5 +162,17 @@ public abstract class AbstractUsersDaoImpl
     {
         return getLdapConfiguration().shouldBindAnonymously();
     }
+
+    public boolean shouldBindWithUsernameAndPassword()
+    {
+        return getLdapConfiguration().shouldBindWithUsernameAndPassword();
+    }
+
+    public boolean shouldBindWithPrincipal()
+    {
+        return getLdapConfiguration().shouldBindWithPrincipal();
+    }
+
+    public abstract String getDomain();
 
 }
