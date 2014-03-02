@@ -5,8 +5,33 @@
     <protocol>ldaps</protocol>
     <username>admin</username>
     <password>password</password>
-    <rootDn>dc=carlspring,dc=com</rootDn>
-    <timeout>30000</timeout>
     <anonymousBind>true</anonymousBind>
+    <timeout>30000</timeout>
+    <rootDn>dc=carlspring,dc=com</rootDn>
+
+    <attribute-mappings>
+        <user-mapping>
+            <uid>sAMAccountName</uid>
+            <password>userPassword</password>
+            <fullName>displayName</fullName>
+            <email>mail</email>
+
+            <filter></filter>
+
+            <query>
+                <objectClass>user</objectClass>
+                <baseDn>dc=carlspring,dc=com</baseDn>
+            </query>
+        </user-mapping>
+        <group-mapping>
+            <groupId>cn</groupId>
+            <groupMember>uniqueMember</groupMember>
+
+            <query>
+                <objectClass>groupOfUniqueNames</objectClass>
+                <baseDn>ou=groups</baseDn>
+            </query>
+        </group-mapping>
+    </attribute-mappings>
     
 </ldap-configuration>

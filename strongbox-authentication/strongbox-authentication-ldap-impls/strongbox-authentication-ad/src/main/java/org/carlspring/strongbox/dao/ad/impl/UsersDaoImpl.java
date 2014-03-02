@@ -1,6 +1,7 @@
 package org.carlspring.strongbox.dao.ad.impl;
 
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
+import org.carlspring.strongbox.configuration.UserMapping;
 import org.carlspring.strongbox.dao.ldap.impl.AbstractUsersDaoImpl;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.resource.ResourceCloser;
@@ -61,7 +62,6 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
     {
         User user = null;
 
-        // User user = null;
         DirContext ctx = null;
         NamingEnumeration results = null;
 
@@ -72,13 +72,23 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
 
             // Step 2: Search the directory
             // TODO: Make this configurable:
-            String filter = "(&(objectClass=user)(sAMAccountName={0}))";
+            final UserMapping userMapping = ldapConfiguration.getAttributeMappings().getUserMapping();
 
-            String[] attrIDs = new String[]{ "sAMAccountName", // uid
-                                             "cn",
-                                             "givenName",      // first name
-                                             "sn",             // last name
-                                             "mail" };
+            String filter;
+            if (userMapping.getFilter() != null && !userMapping.getFilter().trim().equals(""))
+            {
+                filter = userMapping.getFilter();
+            }
+            else
+            {
+                filter = "(&(objectClass=" + userMapping.getQuery().getObjectClass() + ")" +
+                         "(" + userMapping.getUid() + "={0}))";
+            }
+
+            String[] attrIDs = new String[]{ userMapping.getUid(),       // username
+                                             userMapping.getFullName(),  // common name (full name)
+                                             userMapping.getEmail() };
+
 
             SearchControls ctls = new SearchControls();
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -97,22 +107,18 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
 
                 logger.debug("Getting user " + username + " (dn: " + rootDn + ")...");
 
-                Attribute attrUid = result.getAttributes().get("sAMAccountName");
-                Attribute attrFirstName = result.getAttributes().get("givenName");
-                Attribute attrLastName = result.getAttributes().get("sn");
-                Attribute attrEmail = result.getAttributes().get("mail");
+                Attribute attrUid = result.getAttributes().get(userMapping.getUid());
+                Attribute attrFullName = result.getAttributes().get(userMapping.getFullName());
+                Attribute attrEmail = result.getAttributes().get(userMapping.getEmail());
 
-                // TODO: Make this less verbose
                 logger.debug(" * sAMAccountName : " + attrUid.get());
-                logger.debug(" * givenName      : " + attrFirstName.get());
-                logger.debug(" * sn             : " + attrLastName.get());
+                logger.debug(" * displayName    : " + attrFullName.get());
                 logger.debug(" * mail           : " + attrEmail.get());
                 logger.debug("\n");
 
                 user = new User();
                 user.setUsername((String) attrUid.get());
-                user.setFirstName((String) attrFirstName.get());
-                user.setLastName((String) attrLastName.get());
+                user.setFullName((String) attrFullName.get());
                 user.setEmail((String) attrEmail.get());
                 user.setPassword(password);
             }

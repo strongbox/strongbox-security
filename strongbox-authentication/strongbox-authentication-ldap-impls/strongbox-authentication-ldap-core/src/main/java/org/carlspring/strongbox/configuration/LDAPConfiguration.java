@@ -38,6 +38,9 @@ public class LDAPConfiguration implements Serializable
     @XStreamAlias(value = "anonymousBind")
     private boolean anonymousBind = true;
 
+    @XStreamAlias(value = "attribute-mappings")
+    private AttributeMappings attributeMappings;
+
 
     public LDAPConfiguration()
     {
@@ -121,6 +124,21 @@ public class LDAPConfiguration implements Serializable
     public void setAnonymousBind(boolean anonymousBind)
     {
         this.anonymousBind = anonymousBind;
+    }
+
+    public boolean isAnonymousBind()
+    {
+        return anonymousBind;
+    }
+
+    public AttributeMappings getAttributeMappings()
+    {
+        return attributeMappings;
+    }
+
+    public void setAttributeMappings(AttributeMappings attributeMappings)
+    {
+        this.attributeMappings = attributeMappings;
     }
 
 }

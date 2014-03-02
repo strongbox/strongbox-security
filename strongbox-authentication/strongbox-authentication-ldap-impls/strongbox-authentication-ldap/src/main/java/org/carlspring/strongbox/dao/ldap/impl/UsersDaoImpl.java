@@ -1,6 +1,7 @@
 package org.carlspring.strongbox.dao.ldap.impl;
 
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
+import org.carlspring.strongbox.configuration.UserMapping;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.security.jaas.User;
@@ -11,18 +12,19 @@ import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
-
 import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
 
 /**
  * @author mtodorov
  */
+@Component
 public class UsersDaoImpl extends AbstractUsersDaoImpl
 {
 
@@ -66,15 +68,25 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
             // Step 2: Search the directory
             // TODO: Make this configurable:
 
-            // String filter = "(&(objectClass=user)(uid={0}))";
-            String filter = "(&(objectClass=inetOrgPerson)(uid={0})(userPassword={1}))";
+            final UserMapping userMapping = ldapConfiguration.getAttributeMappings().getUserMapping();
+
+            String filter;
+            if (userMapping.getFilter() != null && !userMapping.getFilter().trim().equals(""))
+            {
+                filter = userMapping.getFilter();
+            }
+            else
+            {
+                filter = "(&(objectClass=" + userMapping.getQuery().getObjectClass() + ")" +
+                         "(" + userMapping.getUid() + "={0})" +
+                         "(" + userMapping.getPassword() + "={1}))";
+            }
+
 
             String[] attrIDs = new String[]{ "ou",
-                                             "uid",       // username
-                                             "cn",        // common name (full name)
-                                             "givenName", // first name
-                                             "sn",        // last name
-                                             "mail" };
+                                             userMapping.getUid(),       // username
+                                             userMapping.getFullName(),  // common name (full name)
+                                             userMapping.getEmail() };
 
             SearchControls controls = getSearchControls(attrIDs);
             controls.setReturningAttributes(attrIDs);
@@ -82,9 +94,7 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
 
             results = ctx.search(getRootDn(), filter, new String[]{ uid, password }, controls);
 
-            // String uid = null;
-            String firstName = null;
-            String lastName = null;
+            String fullName = null;
             String email = null;
 
             String rootDn = null;
@@ -99,27 +109,23 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
 
                 attributes = result.getAttributes();
 
-                Attribute attrUId = attributes.get("uid");
-                Attribute attrFirstName = attributes.get("givenName");
-                Attribute attrLastName = attributes.get("sn");
-                Attribute attrEmail = attributes.get("mail");
+                Attribute attrUId = attributes.get(userMapping.getUid());
+                Attribute attrFullName = attributes.get(userMapping.getFullName());
+                Attribute attrEmail = attributes.get(userMapping.getEmail());
 
                 uid = (String) attrUId.get();
                 // Null-proof these:
-                firstName = attrFirstName != null ? (String) attrFirstName.get() : null;
-                lastName = attrLastName != null ? (String) attrLastName.get() : null;
+                fullName = attrFullName != null ? (String) attrFullName.get() : null;
                 email = attrEmail != null ? (String) attrEmail.get() : null;
 
                 logger.debug(" * uid:            " + attrUId.get());
-                logger.debug(" * firstName:      " + firstName);
-                logger.debug(" * lastName:       " + lastName);
-                logger.debug(" * email :         " + email);
+                logger.debug(" * full name:      " + fullName);
+                logger.debug(" * e-mail:         " + email);
                 logger.debug("\n");
 
                 user = new User();
                 user.setUsername(uid);
-                // user.setCredentials(new Credentials(password));
-
+                user.setFullName(fullName);
             }
 
             // if (dn == null || results.hasMore())
@@ -171,4 +177,5 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
     {
         this.ldapConfiguration = ldapConfiguration;
     }
+
 }
