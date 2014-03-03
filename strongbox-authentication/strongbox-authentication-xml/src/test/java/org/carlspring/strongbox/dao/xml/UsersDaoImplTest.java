@@ -1,7 +1,7 @@
 package org.carlspring.strongbox.dao.xml;
 
 import org.carlspring.strongbox.security.jaas.User;
-import org.carlspring.strongbox.util.encryption.EncryptionUtils;
+import org.carlspring.strongbox.security.encryption.EncryptionUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

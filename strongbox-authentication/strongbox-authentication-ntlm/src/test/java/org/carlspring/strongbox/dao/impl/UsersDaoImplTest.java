@@ -2,7 +2,7 @@ package org.carlspring.strongbox.dao.impl;
 
 import org.carlspring.strongbox.dao.UsersDao;
 import org.carlspring.strongbox.dto.User;
-import org.carlspring.strongbox.util.encryption.EncryptionUtils;
+import org.carlspring.strongbox.security.encryption.EncryptionUtils;
 import org.junit.Test;
 
 import java.sql.SQLException;

@@ -2,7 +2,7 @@ package org.carlspring.strongbox.security.jaas.rdbms;
 
 import org.carlspring.strongbox.security.jaas.authentication.BaseLoginModule;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolver;
-import org.carlspring.strongbox.util.encryption.EncryptionUtils;
+import org.carlspring.strongbox.security.encryption.EncryptionUtils;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
