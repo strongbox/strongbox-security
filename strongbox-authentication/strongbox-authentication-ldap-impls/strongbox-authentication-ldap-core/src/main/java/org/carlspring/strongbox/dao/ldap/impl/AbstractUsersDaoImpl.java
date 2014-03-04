@@ -58,6 +58,9 @@ public abstract class AbstractUsersDaoImpl
         env.put(Context.PROVIDER_URL, getProtocol() + "://" + getHost() + ":" + getPort() + "/");
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
 
+        // To get rid of the PartialResultException when using Active Directory
+        env.put(Context.REFERRAL, "follow");
+
         // Check here for some explanations:
         // - https://weblogs.java.net/blog/kohsuke/archive/2008/06/more_active_dir.html
         // - http://docs.alfresco.com/4.2/index.jsp?topic=%2Fcom.alfresco.enterprise.doc%2Fconcepts%2Fauth-ldap-props.html
@@ -83,6 +86,9 @@ public abstract class AbstractUsersDaoImpl
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         env.put(Context.SECURITY_PRINCIPAL, username);
         env.put(Context.SECURITY_CREDENTIALS, password);
+
+        // To get rid of the PartialResultException when using Active Directory
+        env.put(Context.REFERRAL, "follow");
 
         if (getProtocol().equalsIgnoreCase("ldaps"))
         {
