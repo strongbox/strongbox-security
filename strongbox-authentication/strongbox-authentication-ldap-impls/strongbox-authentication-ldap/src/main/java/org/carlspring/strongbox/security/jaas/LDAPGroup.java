@@ -1,13 +1,12 @@
 package org.carlspring.strongbox.security.jaas;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Steve Todorov
  */
-public class LDAPGroup
+public class LDAPGroup implements Group
 {
 
     private String name;
@@ -16,7 +15,7 @@ public class LDAPGroup
 
     private String groupDN;
 
-    private LDAPGroup parentGroup = null;
+    private LDAPGroup parent = null;
 
     private List<String> members = new ArrayList<String>();
 
@@ -25,14 +24,15 @@ public class LDAPGroup
     {
     }
 
-    public LDAPGroup getParentGroup()
+    @Override
+    public LDAPGroup getParent()
     {
-        return parentGroup;
+        return parent;
     }
 
-    public void setParentGroup(LDAPGroup parentGroup)
+    public void setParent(LDAPGroup parent)
     {
-        this.parentGroup = parentGroup;
+        this.parent = parent;
     }
 
     public List<String> getMembers()
@@ -55,6 +55,7 @@ public class LDAPGroup
         return members.remove(member);
     }
 
+    @Override
     public String getName()
     {
         return name;
@@ -65,6 +66,7 @@ public class LDAPGroup
         this.name = name;
     }
 
+    @Override
     public String getDescription()
     {
         return description;

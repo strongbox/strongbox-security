@@ -212,7 +212,7 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
                 group.setName(name);
                 group.setDescription(description);
                 group.setGroupDN(groupDn);
-                group.setParentGroup(parentGroup);
+                group.setParent(parentGroup);
 
                 groups.add(group);
             }
@@ -273,7 +273,7 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
 
             if(parentGroup != null)
             {
-                group.setParentGroup(parentGroup);
+                group.setParent(parentGroup);
             }
 
             return group;
