@@ -4,9 +4,11 @@ import org.carlspring.strongbox.configuration.LDAPConfiguration;
 import org.carlspring.strongbox.configuration.UserMapping;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.resource.ResourceCloser;
+import org.carlspring.strongbox.security.jaas.Group;
 import org.carlspring.strongbox.security.jaas.LDAPGroup;
 import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
+import org.carlspring.strongbox.visitors.ParentGroupVisitor;
 import org.carlspring.strongbox.xml.parsers.LDAPConfigurationParser;
 
 import javax.naming.NamingEnumeration;
@@ -117,10 +119,10 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
                 email = attrEmail != null ? (String) attrEmail.get() : null;
 
                 // Get user groups
-                ArrayList<LDAPGroup> groupsRaw = getUserGroups(userDn, ctx);
-                ArrayList<String> groups = new ArrayList<String>();
+                Set<Group> groupsRaw = getUserGroups(userDn, ctx);
+                Set<String> groups = new LinkedHashSet<String>();
 
-                for(LDAPGroup group : groupsRaw)
+                for(Group group : groupsRaw)
                 {
                     groups.add(group.getName());
                 }
@@ -169,11 +171,10 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
      * @return
      * @throws NamingException
      */
-    private ArrayList<LDAPGroup> getUserGroups(String userDn, DirContext ctx)
+    private Set<Group> getUserGroups(String userDn, DirContext ctx)
             throws NamingException
     {
-
-        ArrayList<LDAPGroup> groups = new ArrayList<LDAPGroup>();
+        Set<Group> groups = new LinkedHashSet<Group>();
 
         String getGroupsQuery = "(&(objectclass=groupOfUniqueNames)(uniqueMember={0}))";
         String[] attrIDs = new String[]{ "ou",
@@ -190,6 +191,9 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
 
         if(results.hasMore())
         {
+            // Handle the direct groups
+            Set<LDAPGroup> directGroups = new LinkedHashSet<LDAPGroup>();
+
             // Get the specific group and work our way to the parent (reverse traversing)
             while(results.hasMore())
             {
@@ -214,7 +218,14 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
                 group.setGroupDN(groupDn);
                 group.setParent(parentGroup);
 
-                groups.add(group);
+                directGroups.add(group);
+            }
+
+            // Reverse the tree
+            for (Group group : directGroups)
+            {
+                ParentGroupVisitor visitor = new ParentGroupVisitor();
+                visitor.visit(group, groups);
             }
         }
 
