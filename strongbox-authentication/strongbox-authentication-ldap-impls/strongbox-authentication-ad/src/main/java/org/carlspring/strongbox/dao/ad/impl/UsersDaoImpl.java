@@ -2,6 +2,7 @@ package org.carlspring.strongbox.dao.ad.impl;
 
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
 import org.carlspring.strongbox.configuration.UserMapping;
+import org.carlspring.strongbox.dao.ldap.UsersDao;
 import org.carlspring.strongbox.dao.ldap.impl.BaseLdapDaoImpl;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.resource.ResourceCloser;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UsersDaoImpl extends BaseLdapDaoImpl
+    implements UsersDao
 {
 
     private static final Logger logger = LoggerFactory.getLogger(UsersDaoImpl.class);
