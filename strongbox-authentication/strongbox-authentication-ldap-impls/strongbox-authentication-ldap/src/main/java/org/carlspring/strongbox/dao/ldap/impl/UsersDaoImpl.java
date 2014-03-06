@@ -17,6 +17,7 @@ import javax.naming.directory.*;
 import java.io.IOException;
 import java.util.*;
 
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +128,9 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
                     groups.add(group.getName());
                 }
 
+                List<String> roles = new ArrayList<String>();
+                roles.addAll(groups);
+
                 logger.debug(" * uid:            " + attrUId.get());
                 logger.debug(" * full name:      " + fullName);
                 logger.debug(" * e-mail:         " + email);
@@ -136,6 +140,7 @@ public class UsersDaoImpl extends AbstractUsersDaoImpl
                 user = new User();
                 user.setUsername(uid);
                 user.setFullName(fullName);
+                user.setRoles(roles);
             }
 
             // if (dn == null || results.hasMore())
