@@ -1,7 +1,6 @@
 package org.carlspring.strongbox.dao.ldap.impl;
 
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
-import org.carlspring.strongbox.dao.ldap.UsersDao;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -17,14 +16,13 @@ import org.springframework.stereotype.Component;
  * @author mtodorov
  */
 @Component
-public abstract class AbstractUsersDaoImpl
-        implements UsersDao
+public abstract class BaseLdapDaoImpl
 {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractUsersDaoImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseLdapDaoImpl.class);
 
 
-    public AbstractUsersDaoImpl()
+    public BaseLdapDaoImpl()
     {
     }
 

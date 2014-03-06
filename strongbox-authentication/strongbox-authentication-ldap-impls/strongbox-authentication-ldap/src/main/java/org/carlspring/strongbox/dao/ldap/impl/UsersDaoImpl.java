@@ -2,6 +2,7 @@ package org.carlspring.strongbox.dao.ldap.impl;
 
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
 import org.carlspring.strongbox.configuration.UserMapping;
+import org.carlspring.strongbox.dao.ldap.UsersDao;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.security.jaas.Group;
@@ -17,7 +18,6 @@ import javax.naming.directory.*;
 import java.io.IOException;
 import java.util.*;
 
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,8 @@ import org.springframework.stereotype.Component;
  * @author mtodorov
  */
 @Component
-public class UsersDaoImpl extends AbstractUsersDaoImpl
+public class UsersDaoImpl extends BaseLdapDaoImpl
+    implements UsersDao
 {
 
     private static final Logger logger = LoggerFactory.getLogger(UsersDaoImpl.class);
