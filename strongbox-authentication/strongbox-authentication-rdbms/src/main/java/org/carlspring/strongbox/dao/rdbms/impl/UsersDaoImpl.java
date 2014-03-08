@@ -44,7 +44,8 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             // TODO: This needs to be re-worked:
-            final String sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+            final String sql = "INSERT INTO " + getTableName() + "(username, password, full_name, email) " +
+                               "VALUES (?, ?, ?, ?)";
 
             connection = getConnection();
 
@@ -54,6 +55,8 @@ public class UsersDaoImpl extends BaseDaoImpl
             // TODO: Re-visit this at a later time
             // preparedStatement.setString(2, getPasswordWithEncryptionPrefix(user.getPassword()));
             preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getFullName());
+            preparedStatement.setString(4, user.getEmail());
 
             preparedStatement.execute();
         }
@@ -81,7 +84,7 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             final String sql = "SELECT *" +
-                               "  FROM users" +
+                               "  FROM " + getTableName() +
                                " WHERE username = ?" +
                                "   AND password = ?";
 
@@ -129,7 +132,7 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             final String sql = "SELECT *" +
-                               "  FROM users" +
+                               "  FROM " + getTableName() +
                                " WHERE username = ?";
 
             connection = getConnection();
@@ -169,7 +172,7 @@ public class UsersDaoImpl extends BaseDaoImpl
 
         try
         {
-            final String sql = "UPDATE users" +
+            final String sql = "UPDATE " + getTableName() +
                                "   SET password = ?" +
                                " WHERE username = ?";
 
@@ -297,7 +300,7 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             final String sql = "SELECT u.username, r.role_name, r.description " +
-                               "  FROM users u, user_roles ur, roles r " +
+                               "  FROM " + getTableName() + " u, user_roles ur, access_roles r " +
                                " WHERE u.username = ur.username " +
                                "   AND r.role_name = ur.role_name" +
                                "   AND u.username = ?";
@@ -366,7 +369,7 @@ public class UsersDaoImpl extends BaseDaoImpl
     /**
      * TODO: This needs to be re-worked.
      *
-     * @param user
+     * @param username
      * @param roleName
      * @return
      * @throws SQLException
@@ -384,7 +387,7 @@ public class UsersDaoImpl extends BaseDaoImpl
         try
         {
             final String sql = "SELECT COUNT(u.username) " +
-                               "  FROM users u, user_roles ur, roles r" +
+                               "  FROM " + getTableName() + " u, user_roles ur, access_roles r" +
                                " WHERE u.username = ur.username " +
                                "   AND r.role_name = ur.role_name " +
                                "   AND u.username = ? " +

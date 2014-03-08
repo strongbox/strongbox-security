@@ -1,0 +1,29 @@
+<ldap-configuration>
+
+    <host>localhost</host>
+    <port>1527</port>
+
+    <username>admin</username>
+    <password>password</password>
+
+    <timeout>30000</timeout>
+
+    <tables>
+        <users>USERS</users>
+        <groups>ROLES</groups>
+    </tables>
+
+    <attribute-mappings>
+        <user-mapping>
+            <uid>username</uid>
+            <password>password</password>
+            <fullName>cn</fullName>
+            <email>mail</email>
+        </user-mapping>
+        <group-mapping>
+            <name>ROLE_NAME</name>
+            <description>description</description>
+        </group-mapping>
+    </attribute-mappings>
+
+</ldap-configuration>

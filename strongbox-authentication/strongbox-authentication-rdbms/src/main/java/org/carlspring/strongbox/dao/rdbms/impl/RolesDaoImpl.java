@@ -24,7 +24,7 @@ public class RolesDaoImpl
 
     private static final Logger logger = LoggerFactory.getLogger(RolesDaoImpl.class);
 
-    public static final String TABLE_NAME = "roles";
+    public static final String TABLE_NAME = "access_roles";
 
 
     public RolesDaoImpl()
@@ -43,7 +43,8 @@ public class RolesDaoImpl
 
         try
         {
-            final String sql = "INSERT INTO roles (role_name, description) VALUES (?, ?)";
+            final String sql = "INSERT INTO " + getTableName() + "" +
+                               " (role_name, description) VALUES (?, ?)";
 
             connection = getConnection();
 
@@ -75,7 +76,7 @@ public class RolesDaoImpl
 
         try
         {
-            final String sql = "SELECT * FROM roles WHERE role_name = ?";
+            final String sql = "SELECT * FROM " + getTableName() + " WHERE role_name = ?";
 
             connection = getConnection();
 
@@ -112,7 +113,7 @@ public class RolesDaoImpl
 
         try
         {
-            final String sql = "UPDATE roles" +
+            final String sql = "UPDATE " + getTableName() +
                                "   SET description = ?" +
                                " WHERE role_name = ?";
 

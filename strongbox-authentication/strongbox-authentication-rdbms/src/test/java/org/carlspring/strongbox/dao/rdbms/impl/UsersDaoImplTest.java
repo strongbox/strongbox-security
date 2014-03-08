@@ -34,6 +34,8 @@ public class UsersDaoImplTest
         User user = new User();
         user.setUsername(USERNAME);
         user.setPassword(PASSWORD);
+        user.setFullName("John Doe");
+        user.setEmail(USERNAME + "@carlspring.org");
 
         final long countOld = usersDao.count();
 

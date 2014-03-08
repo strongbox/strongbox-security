@@ -10,6 +10,10 @@ import java.util.List;
 public interface GroupsDao
 {
 
+    List<Group> getUserGroups(String username);
+
+    List<String> getGroupNames(String username);
+
     List<Group> getAllGroups(String baseDn);
 
     List<Group> getAllGroups(String baseDn, String filter);
