@@ -27,8 +27,8 @@ CREATE TABLE role_mappings (
        PRIVILEGE_NAME       VARCHAR(64)       DEFAULT NULL,
        PRIMARY KEY (MAPPING_ID),
        CONSTRAINT fk_access_roles_rm_1 FOREIGN KEY (ROLE_NAME) REFERENCES access_roles (ROLE_NAME),
-       CONSTRAINT fk_access_privileges FOREIGN KEY (PRIVILEGE_NAME) REFERENCES access_privileges(PRIVILEGE_NAME),
-       CONSTRAINT fk_access_roles_rm_2 FOREIGN KEY (NESTED_ROLE_NAME) REFERENCES access_roles(ROLE_NAME)
+       CONSTRAINT fk_access_roles_rm_2 FOREIGN KEY (NESTED_ROLE_NAME) REFERENCES access_roles(ROLE_NAME),
+       CONSTRAINT fk_access_privileges FOREIGN KEY (PRIVILEGE_NAME) REFERENCES access_privileges(PRIVILEGE_NAME)
 );
 
 CREATE TABLE user_roles (
