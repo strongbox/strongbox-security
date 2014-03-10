@@ -8,14 +8,14 @@
     <context:annotation-config />
     <context:component-scan base-package="org.carlspring.strongbox" />
 
-    <bean id="usersDao" class="org.carlspring.strongbox.dao.rdbms.impl.UsersDaoImpl">
+    <bean id="usersDaoRdbms" class="org.carlspring.strongbox.dao.rdbms.impl.UsersDaoImpl">
     </bean>
 
-    <bean id="rolesDao" class="org.carlspring.strongbox.dao.rdbms.impl.RolesDaoImpl">
+    <bean id="rolesDaoRdbms" class="org.carlspring.strongbox.dao.rdbms.impl.RolesDaoImpl">
     </bean>
 
     <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.rdbms.RDBMSUserRealm">
-        <property name="usersDao" ref="usersDao"/>
+        <property name="usersDao" ref="usersDaoRdbms"/>
     </bean>
 
 </beans>

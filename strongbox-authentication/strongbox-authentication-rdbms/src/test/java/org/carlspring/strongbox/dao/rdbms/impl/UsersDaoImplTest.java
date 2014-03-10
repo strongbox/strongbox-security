@@ -24,7 +24,7 @@ public class UsersDaoImplTest
     public static final String PASSWORD = EncryptionUtils.encryptWithMD5("password");
 
     @Autowired
-    private UsersDao usersDao;
+    private UsersDao usersDaoRdbms;
 
 
     @Test
@@ -37,11 +37,11 @@ public class UsersDaoImplTest
         user.setFullName("John Doe");
         user.setEmail(USERNAME + "@carlspring.org");
 
-        final long countOld = usersDao.count();
+        final long countOld = usersDaoRdbms.count();
 
-        usersDao.createUser(user);
+        usersDaoRdbms.createUser(user);
 
-        final long countNew = usersDao.count();
+        final long countNew = usersDaoRdbms.count();
 
         assertTrue("Failed to create user '" + USERNAME + "'!", countOld < countNew);
 
@@ -54,9 +54,9 @@ public class UsersDaoImplTest
 
         user.setPassword(changedPassword);
 
-        usersDao.updateUser(user);
+        usersDaoRdbms.updateUser(user);
 
-        final User updatedUser = usersDao.findUser(USERNAME, changedPassword);
+        final User updatedUser = usersDaoRdbms.findUser(USERNAME, changedPassword);
 
         assertEquals("Failed to update the user!", changedPassword, updatedUser.getPassword());
 
@@ -64,15 +64,15 @@ public class UsersDaoImplTest
 
         // Test roles
         String roleName = "ADMINISTRATOR";
-        assertFalse("This user is already an administrator!", usersDao.hasRole(user.getUsername(), roleName));
+        assertFalse("This user is already an administrator!", usersDaoRdbms.hasRole(user.getUsername(), roleName));
 
-        usersDao.assignRole(user, roleName);
+        usersDaoRdbms.assignRole(user, roleName);
 
         assertTrue("Failed to assign role 'ADMINISTRATOR' to user '" + USERNAME + "'",
-                   usersDao.hasRole(user.getUsername(), roleName));
+                   usersDaoRdbms.hasRole(user.getUsername(), roleName));
 
         // Delete the user
-        usersDao.removeUser(user);
+        usersDaoRdbms.removeUser(user);
     }
 
 }

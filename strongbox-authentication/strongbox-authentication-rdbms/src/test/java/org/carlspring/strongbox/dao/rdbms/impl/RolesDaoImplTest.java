@@ -21,7 +21,7 @@ public class RolesDaoImplTest
     public static final String ROLE_NAME = "Read";
 
     @Autowired
-    private RolesDao rolesDao;
+    private RolesDao rolesDaoRdbms;
 
 
     @Test
@@ -32,15 +32,15 @@ public class RolesDaoImplTest
         role.setName(ROLE_NAME);
         role.setDescription("An observation role");
 
-        final long countOld = rolesDao.count();
+        final long countOld = rolesDaoRdbms.count();
 
-        rolesDao.createRole(role);
+        rolesDaoRdbms.createRole(role);
 
-        final long countNew = rolesDao.count();
+        final long countNew = rolesDaoRdbms.count();
 
         assertTrue("Failed to create role '" + role.getName() + "'!", countOld < countNew);
 
-        Role createdRole = rolesDao.findRole(ROLE_NAME);
+        Role createdRole = rolesDaoRdbms.findRole(ROLE_NAME);
 
         assertNotNull("Failed to lookup role!", createdRole);
         assertNotNull("Failed to lookup role!", createdRole.getName());
@@ -48,26 +48,26 @@ public class RolesDaoImplTest
         System.out.println("role_name: " + createdRole.getName());
 
         // Update
-        role = rolesDao.findRole(ROLE_NAME);
+        role = rolesDaoRdbms.findRole(ROLE_NAME);
         final String description = "Permission to read objects";
 
         role.setDescription(description);
 
-        rolesDao.updateRole(role);
+        rolesDaoRdbms.updateRole(role);
 
-        final Role updatedRole = rolesDao.findRole(ROLE_NAME);
+        final Role updatedRole = rolesDaoRdbms.findRole(ROLE_NAME);
 
         assertEquals("Failed to update the role!", description, updatedRole.getDescription());
 
         // Count
-        final long count = rolesDao.count();
+        final long count = rolesDaoRdbms.count();
 
         assertTrue("Failed to get the number of available roles!", count > 0);
 
         System.out.println("Number of roles in database: " + count);
 
         // Delete
-        rolesDao.removeRole(role.getName());
+        rolesDaoRdbms.removeRole(role.getName());
 
         // TODO: Re-enable this at some point
         // assertEquals("Failed to delete the role!", 6, rolesDao.count());
