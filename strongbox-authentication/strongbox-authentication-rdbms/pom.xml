@@ -95,7 +95,7 @@
             <plugin>
                 <groupId>org.carlspring.maven</groupId>
                 <artifactId>derby-maven-plugin</artifactId>
-                <version>1.8</version>
+                <version>1.9</version>
 
                 <configuration>
                     <failIfAlreadyRunning>false</failIfAlreadyRunning>
