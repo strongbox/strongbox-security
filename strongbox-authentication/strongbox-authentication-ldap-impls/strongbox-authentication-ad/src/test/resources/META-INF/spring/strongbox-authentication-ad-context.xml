@@ -8,10 +8,10 @@
     <context:annotation-config />
     <context:component-scan base-package="org.carlspring.strongbox" />
 
-    <bean name="usersDao" class="org.carlspring.strongbox.dao.ad.impl.UsersDaoImpl" init-method="load" />
+    <bean name="usersDaoAd" class="org.carlspring.strongbox.dao.ad.impl.UsersDaoImpl" init-method="load" />
 
     <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.ad.ADUserRealm">
-        <property name="usersDao" ref="usersDao"/>
+        <property name="usersDaoAd" ref="usersDaoAd"/>
     </bean>
 
 </beans>

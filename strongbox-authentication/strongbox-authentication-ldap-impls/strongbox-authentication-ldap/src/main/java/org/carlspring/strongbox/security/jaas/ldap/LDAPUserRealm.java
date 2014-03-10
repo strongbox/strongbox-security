@@ -18,7 +18,7 @@ public class LDAPUserRealm
 {
 
     @Autowired
-    private UsersDao usersDao;
+    private UsersDao usersDaoLdap;
 
 
     @Override
@@ -28,7 +28,7 @@ public class LDAPUserRealm
         User user = null;
         try
         {
-            user = getUsersDao().findUser(username);
+            user = getUsersDaoLdap().findUser(username);
         }
         catch (InjectionException e)
         {
@@ -46,7 +46,7 @@ public class LDAPUserRealm
         User user = null;
         try
         {
-            user = getUsersDao().findUser(username, password);
+            user = getUsersDaoLdap().findUser(username, password);
         }
         catch (InjectionException e)
         {
@@ -56,15 +56,15 @@ public class LDAPUserRealm
         return user;
     }
 
-    public UsersDao getUsersDao()
+    public UsersDao getUsersDaoLdap()
             throws InjectionException
     {
-        return usersDao;
+        return usersDaoLdap;
     }
 
-    public void setUsersDao(UsersDao usersDao)
+    public void setUsersDaoLdap(UsersDao usersDaoLdap)
     {
-        this.usersDao = usersDao;
+        this.usersDaoLdap = usersDaoLdap;
     }
 
 }
