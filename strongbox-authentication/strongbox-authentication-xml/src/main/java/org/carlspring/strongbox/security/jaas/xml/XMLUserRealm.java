@@ -17,14 +17,14 @@ public class XMLUserRealm
 {
 
     @Autowired
-    private UsersDao usersDao;
+    private UsersDao usersDaoXml;
 
 
     @Override
     public User findUser(String username)
             throws UserResolutionException
     {
-        return getUsersDao().findUser(username);
+        return getUsersDaoXml().findUser(username);
     }
 
     @Override
@@ -32,17 +32,17 @@ public class XMLUserRealm
                          String password)
             throws UserResolutionException
     {
-        return getUsersDao().findUser(username, password);
+        return getUsersDaoXml().findUser(username, password);
     }
 
-    public UsersDao getUsersDao()
+    public UsersDao getUsersDaoXml()
     {
-        return usersDao;
+        return usersDaoXml;
     }
 
-    public void setUsersDao(UsersDao usersDao)
+    public void setUsersDaoXml(UsersDao usersDaoXml)
     {
-        this.usersDao = usersDao;
+        this.usersDaoXml = usersDaoXml;
     }
 
 }
