@@ -38,7 +38,7 @@ public abstract class BaseLdapDaoImpl
         Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, getProtocol() + "://" + getHost() + ":" + getPort() + "/");
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_AUTHENTICATION, getAuthenticationType());
 
         if (getProtocol().equalsIgnoreCase("ldaps"))
         {
@@ -54,7 +54,7 @@ public abstract class BaseLdapDaoImpl
         Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, getProtocol() + "://" + getHost() + ":" + getPort() + "/");
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_AUTHENTICATION, getAuthenticationType());
 
         // To get rid of the PartialResultException when using Active Directory
         env.put(Context.REFERRAL, "follow");
@@ -81,7 +81,7 @@ public abstract class BaseLdapDaoImpl
         Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, getProtocol() + "://" + getHost() + ":" + getPort() + "/");
-        env.put(Context.SECURITY_AUTHENTICATION, "simple");
+        env.put(Context.SECURITY_AUTHENTICATION, getAuthenticationType());
         env.put(Context.SECURITY_PRINCIPAL, username);
         env.put(Context.SECURITY_CREDENTIALS, password);
 
@@ -146,6 +146,11 @@ public abstract class BaseLdapDaoImpl
     public String getPassword()
     {
         return getLdapConfiguration().getPassword();
+    }
+
+    public String getAuthenticationType()
+    {
+        return getLdapConfiguration().getAuthenticationType();
     }
 
     public int getTimeout()

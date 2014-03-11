@@ -50,6 +50,9 @@ public class LDAPConfiguration implements Serializable
     @XStreamAlias(value = "attribute-mappings")
     private AttributeMappings attributeMappings;
 
+    @XStreamAlias(value = "authenticationType")
+    private String authenticationType;
+
 
     public LDAPConfiguration()
     {
@@ -103,6 +106,16 @@ public class LDAPConfiguration implements Serializable
     public void setPassword(String password)
     {
         this.password = password;
+    }
+
+    public String getAuthenticationType()
+    {
+        return authenticationType;
+    }
+
+    public void setAuthenticationType(String authenticationType)
+    {
+        this.authenticationType = authenticationType;
     }
 
     public String getRootDn()

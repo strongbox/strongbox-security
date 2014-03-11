@@ -9,6 +9,8 @@
     <loginMode>anonymous</loginMode>
     <timeout>30000</timeout>
     <rootDn>dc=carlspring,dc=com</rootDn>
+    <!-- Supports: "simple", "none", "DIGEST-MD5", "CRAM-MD5" -->
+    <authenticationType>simple</authenticationType>
 
     <attribute-mappings>
         <user-mapping>
