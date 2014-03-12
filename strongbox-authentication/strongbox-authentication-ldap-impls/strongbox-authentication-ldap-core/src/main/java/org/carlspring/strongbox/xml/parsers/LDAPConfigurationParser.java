@@ -1,6 +1,5 @@
 package org.carlspring.strongbox.xml.parsers;
 
-import org.carlspring.strongbox.configuration.AuthenticationConfiguration;
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
 
 import com.thoughtworks.xstream.XStream;
