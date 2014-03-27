@@ -162,7 +162,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>strongbox-authentication-core</artifactId>
+            <artifactId>strongbox-security-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -1,6 +1,5 @@
 package org.carlspring.strongbox.security.jaas.ldap;
 
-import org.carlspring.ioc.InjectionException;
 import org.carlspring.strongbox.dao.ldap.UsersDao;
 import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
@@ -25,16 +24,7 @@ public class LDAPUserRealm
     public User findUser(String username)
             throws UserResolutionException
     {
-        User user = null;
-        try
-        {
-            user = getUsersDaoLdap().findUser(username);
-        }
-        catch (InjectionException e)
-        {
-            throw new UserResolutionException(e.getMessage(), e);
-        }
-
+        User user = getUsersDaoLdap().findUser(username);
         return user;
     }
 
@@ -43,21 +33,11 @@ public class LDAPUserRealm
                          String password)
             throws UserResolutionException
     {
-        User user = null;
-        try
-        {
-            user = getUsersDaoLdap().findUser(username, password);
-        }
-        catch (InjectionException e)
-        {
-            throw new UserResolutionException(e.getMessage(), e);
-        }
-
+        User user = getUsersDaoLdap().findUser(username, password);
         return user;
     }
 
     public UsersDao getUsersDaoLdap()
-            throws InjectionException
     {
         return usersDaoLdap;
     }

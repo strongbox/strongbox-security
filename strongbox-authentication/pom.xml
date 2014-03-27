@@ -13,7 +13,6 @@
     <name>Strongbox Authentication: Masterbuild</name>
 
     <modules>
-        <module>strongbox-authentication-core</module>
         <module>strongbox-authentication-xml</module>
         <module>strongbox-authentication-rdbms</module>
         <module>strongbox-authentication-ldap-impls</module>
