@@ -15,7 +15,6 @@
     <modules>
         <module>strongbox-authentication-ldap-core</module>
         <module>strongbox-authentication-ldap</module>
-        <module>strongbox-authentication-ad</module>
     </modules>
 
 </project>
