@@ -8,6 +8,7 @@ import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.security.jaas.Group;
 import org.carlspring.strongbox.security.jaas.LDAPGroup;
 import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.authentication.NotSupportedException;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.visitors.ParentGroupVisitor;
 import org.carlspring.strongbox.xml.parsers.LDAPConfigurationParser;
@@ -231,7 +232,15 @@ public class UsersDaoImpl extends BaseLdapDaoImpl
             for (Group group : directGroups)
             {
                 ParentGroupVisitor visitor = new ParentGroupVisitor();
-                visitor.visit(group, groups);
+                try
+                {
+                    visitor.visit(group, groups);
+                }
+                catch (NotSupportedException e)
+                {
+                    e.printStackTrace();
+                    break;
+                }
             }
         }
 
