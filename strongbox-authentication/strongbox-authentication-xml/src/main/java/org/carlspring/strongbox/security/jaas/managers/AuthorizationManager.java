@@ -61,7 +61,7 @@ public class AuthorizationManager implements ConfigurationManager
     private void loadUsers()
             throws IOException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-users.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/security-users.xml",
                                                                                    "security.users.xml",
                                                                                    "etc/conf/security-users.xml");
 
@@ -80,7 +80,8 @@ public class AuthorizationManager implements ConfigurationManager
     {
         AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
 
-        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authorization.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() +
+                                                                                   "/etc/conf/security-authorization.xml",
                                                                                    "security.authorization.xml",
                                                                                    "etc/conf/security-authorization.xml");
 
@@ -109,7 +110,7 @@ public class AuthorizationManager implements ConfigurationManager
     private void storeUsers()
             throws IOException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-users.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/security-users.xml",
                                                                                    "security.users.xml",
                                                                                    "etc/conf/security-users.xml");
 
@@ -119,7 +120,7 @@ public class AuthorizationManager implements ConfigurationManager
     private void storeAuthorization()
             throws IOException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authorization.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/security-authorization.xml",
                                                                                    "security.authorization.xml",
                                                                                    "etc/conf/security-authorization.xml");
 

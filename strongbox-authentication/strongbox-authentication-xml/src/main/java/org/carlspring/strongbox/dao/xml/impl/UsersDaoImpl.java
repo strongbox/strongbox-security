@@ -171,6 +171,13 @@ public class UsersDaoImpl
         return userManager.getUsers().size();
     }
 
+    @Override
+    public boolean contains(String username)
+            throws UserResolutionException
+    {
+        return userManager.contains(username);
+    }
+
     public UserParser getUserParser()
     {
         return userParser;
@@ -184,7 +191,7 @@ public class UsersDaoImpl
     public Resource getUsersConfigurationFile()
             throws IOException
     {
-        return configurationResourceResolver.getConfigurationResource("etc/conf/security-users.xml",
+        return configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/etc/conf/security-users.xml",
                                                                       "security.users.xml",
                                                                       "etc/conf/security-users.xml");
     }

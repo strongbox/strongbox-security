@@ -341,7 +341,8 @@ public class UsersDaoImpl extends BaseLdapDaoImpl
     public void load()
             throws IOException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource("etc/conf/security-authentication-ldap.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() +
+                                                                                   "/etc/conf/security-authentication-ldap.xml",
                                                                                    "security.users.xml",
                                                                                    "etc/conf/security-authentication-ldap.xml");
 
