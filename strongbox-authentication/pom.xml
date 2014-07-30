@@ -16,7 +16,6 @@
         <module>strongbox-authentication-xml</module>
         <module>strongbox-authentication-rdbms</module>
         <module>strongbox-authentication-ldap-impls</module>
-        <!--module>strongbox-authentication-ntlm</module-->
     </modules>
 
 </project>

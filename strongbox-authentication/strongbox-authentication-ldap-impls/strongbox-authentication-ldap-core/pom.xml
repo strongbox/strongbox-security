@@ -100,13 +100,13 @@
         </dependency>
         <dependency>
             <groupId>org.carlspring.strongbox</groupId>
-            <artifactId>strongbox-testing-resources</artifactId>
+            <artifactId>strongbox-common-resources</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.carlspring.strongbox</groupId>
-            <artifactId>strongbox-testing-storage-api-resources</artifactId>
+            <artifactId>strongbox-storage-api-resources</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
