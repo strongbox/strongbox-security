@@ -1,7 +1,7 @@
 <ldap-configuration>
 
     <host>localhost</host>
-    <port>1527</port>
+    <port>${port.derby}</port>
 
     <username>admin</username>
     <password>password</password>

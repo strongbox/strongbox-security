@@ -1,7 +1,7 @@
 <ldap-configuration>
 
     <host>localhost</host>
-    <port>40636</port>
+    <port>${port.unboundid}</port>
     <protocol>ldaps</protocol>
     <username>admin</username>
     <password>password</password>
