@@ -16,7 +16,30 @@
 
     <name>Strongbox Authentication: LDAP</name>
 
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Carlspring Consulting &amp; Development Ltd.</name>
+        <url>http://www.carlspring.org/</url>
+    </organization>
+
+    <inceptionYear>2014</inceptionYear>
+
     <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -42,47 +65,10 @@
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                    <systemPropertyVariables>
+                        <port.unboundid>${port.unboundid}</port.unboundid>
+                    </systemPropertyVariables>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.carlspring.maven</groupId>
-                <artifactId>unboundid-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-
-                <configuration>
-                    <baseDn>dc=carlspring,dc=com</baseDn>
-                    <portSSL>40636</portSSL>
-                    <useSSL>true</useSSL>
-                    <keyStorePassword>password</keyStorePassword>
-                    <keyStorePath>${basedir}/src/test/resources/etc/ssl/keystore.jks</keyStorePath>
-                    <trustStorePath>${basedir}/src/test/resources/etc/ssl/truststore.jks</trustStorePath>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <id>unboundid-start</id>
-
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-
-                        <configuration>
-                            <ldifFiles>
-                                <ldifFile>${basedir}/src/test/resources/ldap/unboundid.ldif</ldifFile>
-                            </ldifFiles>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unboundid-stop</id>
-
-                        <phase>test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -146,4 +132,91 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>run-it-tests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.9</version>
+                        <executions>
+                            <execution>
+                                <id>reserve-network-port</id>
+                                <goals>
+                                    <goal>reserve-network-port</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <portNames>
+                                        <portName>port.unboundid</portName>
+                                    </portNames>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.carlspring.maven</groupId>
+                        <artifactId>unboundid-maven-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+
+                        <configuration>
+                            <baseDn>dc=carlspring,dc=com</baseDn>
+                            <portSSL>${port.unboundid}</portSSL>
+                            <useSSL>true</useSSL>
+                            <keyStorePassword>password</keyStorePassword>
+                            <keyStorePath>${basedir}/src/test/resources/etc/ssl/keystore.jks</keyStorePath>
+                            <trustStorePath>${basedir}/src/test/resources/etc/ssl/truststore.jks</trustStorePath>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>unboundid-start</id>
+
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+
+                                <configuration>
+                                    <ldifFiles>
+                                        <ldifFile>${basedir}/src/test/resources/ldap/unboundid.ldif</ldifFile>
+                                    </ldifFiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unboundid-stop</id>
+
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>set-default-ports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <!-- Default ports for local development: -->
+                <port.unboundid>40636</port.unboundid>
+            </properties>
+        </profile>
+    </profiles>
 </project>

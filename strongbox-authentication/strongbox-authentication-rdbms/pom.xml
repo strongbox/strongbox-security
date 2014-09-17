@@ -18,51 +18,32 @@
 
     <licenses>
         <license>
-            <name>The Apache Software License, Version 2.0</name>
+            <name>Apache 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
 
-    <properties>
-        <derby.url>jdbc:derby://localhost:1527/db;user=derby;password=derby</derby.url>
+    <organization>
+        <name>Carlspring Consulting &amp; Development Ltd.</name>
+        <url>http://www.carlspring.org/</url>
+    </organization>
 
+    <inceptionYear>2014</inceptionYear>
+
+    <properties>
         <version.derby>10.10.1.1</version.derby>
         <version.spring>3.2.4.RELEASE</version.spring>
     </properties>
 
     <build>
-        <!--
         <testResources>
-            <testResource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
             <testResource>
                 <directory>${basedir}/src/test/resources</directory>
                 <filtering>true</filtering>
             </testResource>
-            <testResource>
-                <directory>${basedir}/src/main/jetty</directory>
-                <targetPath>${project.build.directory}/jetty</targetPath>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>${project.build.directory}/tmp/test-resources/META-INF/replaceables</directory>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>${project.build.directory}/tmp/test-resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>META-INF/replaceables/**</exclude>
-                    <exclude>META-INF/maven/**</exclude>
-                    <exclude>META-INF/MANIFEST.MF</exclude>
-                </excludes>
-            </testResource>
         </testResources>
-        -->
 
         <plugins>
             <plugin>
@@ -89,72 +70,10 @@
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                    <systemPropertyVariables>
+                        <port.unboundid>${port.derby}</port.unboundid>
+                    </systemPropertyVariables>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.carlspring.maven</groupId>
-                <artifactId>derby-maven-plugin</artifactId>
-                <version>1.9</version>
-
-                <configuration>
-                    <failIfAlreadyRunning>false</failIfAlreadyRunning>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <id>start-derby</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sql-maven-plugin</artifactId>
-                <version>1.5</version>
-
-                <dependencies>
-                    <!-- specify the dependent jdbc driver here -->
-                    <dependency>
-                    	<groupId>org.apache.derby</groupId>
-                    	<artifactId>derby</artifactId>
-                    	<version>${version.derby}</version>
-                    </dependency>
-                    <dependency>
-                    	<groupId>org.apache.derby</groupId>
-                    	<artifactId>derbyclient</artifactId>
-                    	<version>${version.derby}</version>
-                    </dependency>
-                </dependencies>
-
-                <!-- common configuration shared by all executions -->
-                <configuration>
-                    <driver>org.apache.derby.jdbc.ClientDriver</driver>
-                    <url>${derby.url};create=true</url>
-                    <onError>continue</onError>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <id>db-populate</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <configuration>
-                            <onError>abort</onError>
-                            <autocommit>true</autocommit>
-                            <srcFiles>
-                                <srcFile>${basedir}/src/test/resources/sql/derby/01-db.sql</srcFile>
-                                <srcFile>${basedir}/src/test/resources/sql/derby/02-ddl.sql</srcFile>
-                            </srcFiles>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -242,5 +161,127 @@
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>run-it-tests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <derby.url>jdbc:derby://localhost:${port.derby}/db;user=derby;password=derby</derby.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.9</version>
+                        <executions>
+                            <execution>
+                                <id>reserve-network-port</id>
+                                <goals>
+                                    <goal>reserve-network-port</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <portNames>
+                                        <portName>port.derby</portName>
+                                    </portNames>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.carlspring.maven</groupId>
+                        <artifactId>derby-maven-plugin</artifactId>
+                        <version>1.9</version>
+
+                        <configuration>
+                            <failIfAlreadyRunning>false</failIfAlreadyRunning>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>start-derby</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+
+                                <configuration>
+                                    <port>${port.derby}</port>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <!-- specify the dependent jdbc driver here -->
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derby</artifactId>
+                            	<version>${version.derby}</version>
+                            </dependency>
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derbyclient</artifactId>
+                            	<version>${version.derby}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <!-- common configuration shared by all executions -->
+                        <configuration>
+                            <driver>org.apache.derby.jdbc.ClientDriver</driver>
+                            <url>${derby.url};create=true</url>
+                            <onError>continue</onError>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>db-populate</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <onError>abort</onError>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>${basedir}/src/test/resources/sql/derby/01-db.sql</srcFile>
+                                        <srcFile>${basedir}/src/test/resources/sql/derby/02-ddl.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>set-default-ports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <!-- Default ports for local development: -->
+                <port.derby>1527</port.derby>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

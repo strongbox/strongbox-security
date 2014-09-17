@@ -16,6 +16,22 @@
 
     <name>Strongbox Authentication: XML</name>
 
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Carlspring Consulting &amp; Development Ltd.</name>
+        <url>http://www.carlspring.org/</url>
+    </organization>
+
+    <inceptionYear>2014</inceptionYear>
+
     <build>
         <plugins>
             <plugin>
@@ -37,11 +53,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.15</version>
-
                 <configuration>
                     <forkMode>once</forkMode>
                     <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                    <systemPropertyVariables>
+                        <strongbox.basedir>${basedir}/target/strongbox</strongbox.basedir>
+                        <port.jetty.listen>${port.jetty.listen}</port.jetty.listen>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
@@ -285,6 +303,27 @@
                     </plugin>
 
                     <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.9</version>
+                        <executions>
+                            <execution>
+                                <id>reserve-network-port</id>
+                                <goals>
+                                    <goal>reserve-network-port</goal>
+                                </goals>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <portNames>
+                                        <portName>port.jetty.listen</portName>
+                                        <portName>port.jetty.shutdown</portName>
+                                    </portNames>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
                         <version>${version.jetty}</version>
@@ -299,11 +338,17 @@
                                 <descriptor>${dir.strongbox}/webapp/WEB-INF/web.xml</descriptor>
                             </webApp>
 
-                            <stopPort>19081</stopPort>
+                            <stopPort>${port.jetty.shutdown}</stopPort>
                             <stopKey>53AS9DS1FD8E3WEFEW9GR1ER8G2ER0WE31</stopKey>
-                            <stopWait>20</stopWait>
+                            <stopWait>10</stopWait>
+
+                            <httpConnector>
+                                <port>${port.jetty.listen}</port>
+                            </httpConnector>
 
                             <systemProperties>
+                                <force>true</force>
+
                                 <systemProperty>
                                     <name>strongbox.basedir</name>
                                     <value>${dir.strongbox}</value>
@@ -320,7 +365,10 @@
 
                             <useTestScope>true</useTestScope>
 
+                            <!-- Restore the following for SSL/HTTPSL when the time comes:
                             <jettyXml>${dir.jetty.etc}/jetty.xml,${dir.jetty.etc}/jetty-http.xml,${dir.jetty.etc}/jetty-ssl.xml,${dir.jetty.etc}/jetty-https.xml</jettyXml>
+                            -->
+                            <jettyXml>${dir.jetty.etc}/jetty.xml,${dir.jetty.etc}/jetty-http.xml</jettyXml>
                         </configuration>
 
                         <executions>
@@ -335,7 +383,7 @@
                             <execution>
                                 <id>jetty-stop</id>
 
-                                <phase>package</phase>
+                                <phase>test</phase>
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
@@ -364,6 +412,18 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>set-default-ports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <!-- Default ports for local development: -->
+                <port.jetty.listen>48080</port.jetty.listen>
+                <port.jetty.shutdown>19081</port.jetty.shutdown>
+            </properties>
         </profile>
     </profiles>
 
