@@ -71,7 +71,7 @@
                     <forkMode>once</forkMode>
                     <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
                     <systemPropertyVariables>
-                        <port.unboundid>${port.derby}</port.unboundid>
+                        <port.derby>${port.derby}</port.derby>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -267,13 +267,16 @@
                             </execution>
                         </executions>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>
         <profile>
             <id>set-default-ports</id>
             <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
                 <activeByDefault>true</activeByDefault>
             </activation>
 
