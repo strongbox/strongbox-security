@@ -33,6 +33,13 @@
     <inceptionYear>2014</inceptionYear>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -49,19 +56,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.15</version>
-
-                <configuration>
-                    <forkMode>once</forkMode>
-                    <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
-                    <systemPropertyVariables>
-                        <port.unboundid>${port.unboundid}</port.unboundid>
-                    </systemPropertyVariables>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -121,13 +115,10 @@
     </dependencies>
 
     <profiles>
+        <!-- These two profiles need to be on top: -->
         <profile>
-            <id>run-it-tests</id>
+            <id>reserve-ports</id>
             <activation>
-                <property>
-                    <name>skipTests</name>
-                    <value>!true</value>
-                </property>
                 <activeByDefault>false</activeByDefault>
             </activation>
 
@@ -143,7 +134,7 @@
                                 <goals>
                                     <goal>reserve-network-port</goal>
                                 </goals>
-                                <phase>process-resources</phase>
+                                <phase>initialize</phase>
                                 <configuration>
                                     <portNames>
                                         <portName>port.unboundid</portName>
@@ -152,6 +143,39 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>set-default-ports</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <!-- Default ports for local development: -->
+                <port.unboundid>40636</port.unboundid>
+            </properties>
+        </profile>
+        <!-- These two profiles need to be on top. -->
+
+        <profile>
+            <id>run-it-tests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.carlspring.maven</groupId>
                         <artifactId>unboundid-maven-plugin</artifactId>
@@ -162,8 +186,8 @@
                             <portSSL>${port.unboundid}</portSSL>
                             <useSSL>true</useSSL>
                             <keyStorePassword>password</keyStorePassword>
-                    <keyStorePath>${basedir}/src/test/resources/etc/ssl/keystore.jks</keyStorePath>
-                    <trustStorePath>${basedir}/src/test/resources/etc/ssl/truststore.jks</trustStorePath>
+                            <keyStorePath>${basedir}/src/test/resources/etc/ssl/keystore.jks</keyStorePath>
+                            <trustStorePath>${basedir}/src/test/resources/etc/ssl/truststore.jks</trustStorePath>
                         </configuration>
 
                         <executions>
@@ -191,19 +215,22 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.15</version>
+
+                        <configuration>
+                            <forkMode>once</forkMode>
+                            <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                            <systemPropertyVariables>
+                                <port.unboundid>${port.unboundid}</port.unboundid>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>set-default-ports</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <!-- Default ports for local development: -->
-                <port.unboundid>40636</port.unboundid>
-            </properties>
         </profile>
     </profiles>
 </project>
