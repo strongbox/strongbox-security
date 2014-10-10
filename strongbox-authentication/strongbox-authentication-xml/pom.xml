@@ -125,10 +125,21 @@
             <artifactId>maven-core</artifactId>
         </dependency>
 
-        <!-- Use Log4J for logging -->
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+             <artifactId>jul-to-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
         </dependency>
 
         <dependency>
@@ -242,7 +253,7 @@
                         <version>2.8</version>
                         <executions>
                             <execution>
-                                <id>unpack-resources-log4j</id>
+                                <id>unpack-resources-logging</id>
                                 <phase>process-resources</phase>
                                 <goals>
                                     <goal>unpack</goal>
@@ -257,7 +268,7 @@
 
                                             <overWrite>true</overWrite>
                                             <outputDirectory>${dir.strongbox}/etc</outputDirectory>
-                                            <includes>log4j.properties</includes>
+                                            <includes>logback.xml</includes>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
@@ -299,7 +310,7 @@
 
                                             <overWrite>true</overWrite>
                                             <outputDirectory>${dir.strongbox}/etc</outputDirectory>
-                                            <includes>log4j.properties</includes>
+                                            <includes>logback.xml</includes>
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>${project.groupId}</groupId>
@@ -385,10 +396,6 @@
                                 <systemProperty>
                                     <name>strongbox.storage.booter.basedir</name>
                                     <value>${basedir}/target/storages</value>
-                                </systemProperty>
-                                <systemProperty>
-                                    <name>log4j.configuration</name>
-                                    <value>file:${dir.strongbox}/etc/log4j.properties</value>
                                 </systemProperty>
                             </systemProperties>
 

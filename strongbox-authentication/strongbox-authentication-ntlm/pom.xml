@@ -165,10 +165,21 @@
         </dependency>
         -->
 
-        <!-- Use Log4J for logging -->
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+             <artifactId>jul-to-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
         </dependency>
 
         <dependency>
@@ -255,18 +266,6 @@
                                             <name>java.security.auth.login.config</name>
                                             <value>${project.build.directory}/jetty/etc/login.conf</value>
                                         </systemProperty>
-
-                                        <!-- Log4J settings -->
-                                        <systemProperty>
-                                            <name>log4j.configuration</name>
-                                            <value>file://${project.build.testOutputDirectory}/log4j.properties</value>
-                                        </systemProperty>
-                                        <!--
-                                        <systemProperty>
-                                            <name>log4j.debug</name>
-                                        </systemProperty>
-                                        -->
-                                        <!-- Log4J settings -->
                                     </systemProperties>
 
                                 </configuration>

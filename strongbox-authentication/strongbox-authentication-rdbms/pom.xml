@@ -34,7 +34,6 @@
 
     <properties>
         <version.derby>10.10.1.1</version.derby>
-        <version.spring>3.2.4.RELEASE</version.spring>
     </properties>
 
     <build>
@@ -61,19 +60,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.15</version>
-
-                <configuration>
-                    <forkMode>once</forkMode>
-                    <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
-                    <systemPropertyVariables>
-                        <port.derby>${port.derby}</port.derby>
-                    </systemPropertyVariables>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -127,10 +113,21 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Use Log4J for logging -->
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+             <artifactId>jul-to-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
         </dependency>
 
         <dependency>
@@ -163,19 +160,12 @@
     </dependencies>
 
     <profiles>
+        <!-- These two profiles need to be on top: -->
         <profile>
-            <id>run-it-tests</id>
+            <id>reserve-ports</id>
             <activation>
-                <property>
-                    <name>skipTests</name>
-                    <value>!true</value>
-                </property>
                 <activeByDefault>false</activeByDefault>
             </activation>
-
-            <properties>
-                <derby.url>jdbc:derby://localhost:${port.derby}/db;user=derby;password=derby</derby.url>
-            </properties>
 
             <build>
                 <plugins>
@@ -198,7 +188,40 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>set-default-ports</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 
+            <properties>
+                <!-- Default ports for local development: -->
+                <port.derby>1527</port.derby>
+            </properties>
+        </profile>
+        <profile>
+            <id>run-it-tests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <derby.url>jdbc:derby://localhost:${port.derby}/db;user=derby;password=derby</derby.url>
+            </properties>
+
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.carlspring.maven</groupId>
                         <artifactId>derby-maven-plugin</artifactId>
@@ -267,23 +290,22 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.15</version>
+
+                        <configuration>
+                            <forkMode>once</forkMode>
+                            <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                            <systemPropertyVariables>
+                                <port.derby>${port.derby}</port.derby>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>set-default-ports</id>
-            <activation>
-                <property>
-                    <name>skipTests</name>
-                    <value>!true</value>
-                </property>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
-            <properties>
-                <!-- Default ports for local development: -->
-                <port.derby>1527</port.derby>
-            </properties>
         </profile>
     </profiles>
 
