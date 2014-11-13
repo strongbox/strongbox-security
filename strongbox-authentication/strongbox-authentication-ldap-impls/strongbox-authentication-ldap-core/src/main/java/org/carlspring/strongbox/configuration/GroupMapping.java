@@ -13,13 +13,13 @@ public class GroupMapping
     /**
      * The group's ID attribute. (Usually something like cn).
      */
-    @XmlElement(name = "groupId")
+    @XmlElement(name = "group-id")
     private String groupId;
 
     /**
      * The group's member attribute. (Usually something like uniqueMember).
      */
-    @XmlElement(name = "groupMember")
+    @XmlElement(name = "group-member")
     private String groupMember;
 
     @XmlElement(name = "query")

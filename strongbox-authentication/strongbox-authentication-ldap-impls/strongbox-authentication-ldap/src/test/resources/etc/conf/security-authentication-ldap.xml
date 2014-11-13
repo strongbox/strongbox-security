@@ -28,7 +28,7 @@
             </query>
         </user-mapping>
         <group-mapping>
-            <groupId>cn</groupId>
+            <group-id>cn</group-id>
             <group-member>uniqueMember</group-member>
 
             <query>
