@@ -1,26 +1,28 @@
 package org.carlspring.strongbox.configuration;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.*;
 
 /**
  * @author mtodorov
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class GroupMapping
 {
 
     /**
      * The group's ID attribute. (Usually something like cn).
      */
-    @XStreamAlias(value = "groupId")
+    @XmlElement(name = "groupId")
     private String groupId;
 
     /**
      * The group's member attribute. (Usually something like uniqueMember).
      */
-    @XStreamAlias(value = "groupMember")
+    @XmlElement(name = "groupMember")
     private String groupMember;
 
-    @XStreamAlias(value = "query")
+    @XmlElement(name = "query")
     private QueryDetails query;
 
 

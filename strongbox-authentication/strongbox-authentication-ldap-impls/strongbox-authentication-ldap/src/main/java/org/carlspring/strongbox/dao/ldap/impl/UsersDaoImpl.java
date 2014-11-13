@@ -11,11 +11,12 @@ import org.carlspring.strongbox.security.jaas.User;
 import org.carlspring.strongbox.security.jaas.authentication.NotSupportedException;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.visitors.ParentGroupVisitor;
-import org.carlspring.strongbox.xml.parsers.LDAPConfigurationParser;
+import org.carlspring.strongbox.xml.parsers.GenericParser;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.*;
 
@@ -37,9 +38,6 @@ public class UsersDaoImpl extends BaseLdapDaoImpl
 
     @Autowired
     private ConfigurationResourceResolver configurationResourceResolver;
-
-    @Autowired
-    private LDAPConfigurationParser ldapConfigurationParser;
 
     private LDAPConfiguration ldapConfiguration;
 
@@ -339,16 +337,16 @@ public class UsersDaoImpl extends BaseLdapDaoImpl
     }
 
     public void load()
-            throws IOException
+            throws IOException, JAXBException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() +
-                                                                                   "/etc/conf/security-authentication-ldap.xml",
-                                                                                   "security.users.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource("security.users.xml",
                                                                                    "etc/conf/security-authentication-ldap.xml");
 
         logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
 
-        ldapConfiguration = ldapConfigurationParser.parse(resource.getInputStream());
+        GenericParser<LDAPConfiguration> parser = new GenericParser<>(LDAPConfiguration.class);
+
+        ldapConfiguration = parser.parse(resource.getInputStream());
     }
 
     public LDAPConfiguration getLdapConfiguration()

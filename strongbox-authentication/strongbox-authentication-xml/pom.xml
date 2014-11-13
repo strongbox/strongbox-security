@@ -365,8 +365,6 @@
                         <version>${version.jetty}</version>
 
                         <configuration>
-                            <scanIntervalSeconds>10</scanIntervalSeconds>
-
                             <daemon>true</daemon>
 
                             <webApp>

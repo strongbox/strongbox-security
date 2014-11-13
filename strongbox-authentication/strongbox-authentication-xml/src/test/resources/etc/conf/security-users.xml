@@ -3,7 +3,7 @@
         <username>admin</username>
         <credentials>
             <password>maven</password>
-            <encryptionAlgorithm>MD5</encryptionAlgorithm>
+            <encryption-algorithm>MD5</encryption-algorithm>
         </credentials>
         <roles>
             <role>administrator</role>
@@ -13,7 +13,7 @@
         <username>maven</username>
         <credentials>
             <password>maven</password>
-            <encryptionAlgorithm>MD5</encryptionAlgorithm>
+            <encryption-algorithm>MD5</encryption-algorithm>
         </credentials>
         <roles>
             <role>user</role>

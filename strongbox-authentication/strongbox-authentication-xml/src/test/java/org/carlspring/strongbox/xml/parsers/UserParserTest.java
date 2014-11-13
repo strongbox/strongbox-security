@@ -2,25 +2,22 @@ package org.carlspring.strongbox.xml.parsers;
 
 import org.carlspring.strongbox.security.jaas.Credentials;
 import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.Users;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import com.thoughtworks.xstream.XStream;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author mtodorov
  */
-// @RunWith(SpringJUnit4ClassRunner.class)
-// @ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(locations={"/META-INF/spring/strongbox-*-context.xml"})
 public class UserParserTest
 {
 
@@ -32,12 +29,13 @@ public class UserParserTest
 
     public static final String XML_OUTPUT_FILE = CONFIGURATION_BASEDIR + "/security-users-saved.xml";
 
+    private GenericParser<Users> parser = new GenericParser<>(Users.class);
 
     @Test
     public void testStoreUsers()
-            throws IOException
+            throws IOException, JAXBException
     {
-        List<User> users = new ArrayList<User>();
+        Set<User> users = new LinkedHashSet<User>();
         users.add(createUser("admin", "password", "admin"));
         users.add(createUser("user", "password", "view", "read"));
         users.add(createUser("deployer", "password", "deploy", "read", "delete"));
@@ -46,28 +44,24 @@ public class UserParserTest
 
         System.out.println("Storing " + outputFile.getAbsolutePath() + "...");
 
-        UserParser parser = new UserParser();
-        parser.store(users, outputFile.getCanonicalPath());
+        parser.store(new Users(users), outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);
     }
 
     @Test
     public void testParseUsers()
-            throws IOException
+            throws IOException, JAXBException
     {
         File xmlFile = new File(XML_FILE);
 
         System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
 
-        UserParser parser = new UserParser();
-        final XStream xstream = parser.getXStreamInstance();
-
         //noinspection unchecked
-        final List<User> users = (List<User>) xstream.fromXML(xmlFile);
+        final Users users = parser.parse(xmlFile);
 
         assertTrue("Failed to parse any users!", users != null);
-        assertFalse("Failed to parse any users!", users.isEmpty());
+        assertFalse("Failed to parse any users!", users.getUsers().isEmpty());
     }
 
     private User createUser(String username, String password, String... roles)

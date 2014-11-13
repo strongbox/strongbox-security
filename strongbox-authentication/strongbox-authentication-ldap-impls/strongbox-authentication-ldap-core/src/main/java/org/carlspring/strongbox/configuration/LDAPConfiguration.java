@@ -1,41 +1,45 @@
 package org.carlspring.strongbox.configuration;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * @author mtodorov
  */
+@XmlRootElement(name = "ldap-configuration")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LDAPConfiguration implements Serializable
 {
 
-    @XStreamAlias(value = "host")
+    @XmlElement
     private String host;
 
-    @XStreamAlias(value = "port")
+    @XmlElement
     private int port;
 
-    @XStreamAlias(value = "protocol")
+    @XmlElement
     private String protocol;
 
-    @XStreamAlias(value = "username")
+    @XmlElement
     private String username;
 
-    @XStreamAlias(value = "password")
+    @XmlElement
     private String password;
 
-    @XStreamAlias(value = "rootDn")
+    @XmlElement(name = "root-dn")
     private String rootDn;
 
     /**
      * The connection time limit. If set to 0, will wait indefinitely,
      * until the results are retrieved.
      */
-    @XStreamAlias(value = "timeout")
+    @XmlElement
     private int timeout = 30000;
 
-    @XStreamAlias(value = "domain")
+    @XmlElement
     private String domain;
 
     /**
@@ -44,13 +48,13 @@ public class LDAPConfiguration implements Serializable
      * - username/password (username)
      * - principal/password (principal)
      */
-    @XStreamAlias(value = "loginMode")
+    @XmlElement(name = "login-mode")
     private String loginMode;
 
-    @XStreamAlias(value = "attribute-mappings")
+    @XmlElement(name = "attribute-mappings")
     private AttributeMappings attributeMappings;
 
-    @XStreamAlias(value = "authenticationType")
+    @XmlElement(name = "authentication-type")
     private String authenticationType;
 
 

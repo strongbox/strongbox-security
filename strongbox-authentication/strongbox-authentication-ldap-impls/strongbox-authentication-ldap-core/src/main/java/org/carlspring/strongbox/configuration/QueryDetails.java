@@ -1,17 +1,19 @@
 package org.carlspring.strongbox.configuration;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.*;
 
 /**
  * @author mtodorov
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class QueryDetails
 {
 
-    @XStreamAlias(value = "baseDn")
+    @XmlElement(name = "base-dn")
     private String baseDn;
 
-    @XStreamAlias(value = "objectClass")
+    @XmlElement(name = "object-class")
     private String objectClass;
 
 

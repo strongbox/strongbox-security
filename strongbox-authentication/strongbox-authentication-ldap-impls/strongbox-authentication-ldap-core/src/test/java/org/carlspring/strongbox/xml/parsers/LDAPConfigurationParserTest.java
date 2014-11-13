@@ -2,10 +2,10 @@ package org.carlspring.strongbox.xml.parsers;
 
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 
-import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
@@ -23,27 +23,26 @@ public class LDAPConfigurationParserTest
 
     public static final String XML_OUTPUT_FILE = CONFIGURATION_BASEDIR + "/security-authentication-ldap-saved.xml";
 
+    private GenericParser<LDAPConfiguration> parser = new GenericParser<LDAPConfiguration>(LDAPConfiguration.class);
+
 
     @Test
     public void testParseAuthenticationConfigurationLDAP()
-            throws IOException
+            throws IOException, JAXBException
     {
         File xmlFile = new File(XML_FILE);
 
         System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
 
-        LDAPConfigurationParser parser = new LDAPConfigurationParser();
-        final XStream xstream = parser.getXStreamInstance();
-
         //noinspection unchecked
-        LDAPConfiguration configuration = (LDAPConfiguration) xstream.fromXML(xmlFile);
+        LDAPConfiguration configuration = parser.parse(xmlFile);
 
         assertTrue("Failed to parse the authorization configuration!", configuration != null);
     }
 
     @Test
     public void testStoreAuthenticationConfigurationLDAP()
-            throws IOException
+            throws IOException, JAXBException
     {
         LDAPConfiguration configuration = new LDAPConfiguration();
         configuration.setHost("localhost");
@@ -58,7 +57,6 @@ public class LDAPConfigurationParserTest
 
         System.out.println("Storing " + outputFile.getAbsolutePath() + "...");
 
-        LDAPConfigurationParser parser = new LDAPConfigurationParser();
         parser.store(configuration, outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);

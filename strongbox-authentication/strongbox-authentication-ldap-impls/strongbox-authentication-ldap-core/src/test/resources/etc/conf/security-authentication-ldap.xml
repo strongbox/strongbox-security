@@ -6,33 +6,33 @@
     <username>admin</username>
     <password>password</password>
     <!-- TODO: Change this to "principal" when testing against a real Active Directory server -->
-    <loginMode>anonymous</loginMode>
+    <login-mode>anonymous</login-mode>
     <timeout>30000</timeout>
-    <rootDn>dc=carlspring,dc=com</rootDn>
+    <root-dn>dc=carlspring,dc=com</root-dn>
     <!-- Supports: "simple", "none", "DIGEST-MD5", "CRAM-MD5" -->
-    <authenticationType>simple</authenticationType>
+    <authentication-type>simple</authentication-type>
 
     <attribute-mappings>
         <user-mapping>
             <uid>uid</uid>
             <password>userPassword</password>
-            <fullName>cn</fullName>
+            <full-name>cn</full-name>
             <email>mail</email>
 
             <filter></filter>
 
             <query>
-                <objectClass>inetOrgPerson</objectClass>
-                <baseDn>dc=carlspring,dc=com</baseDn>
+                <object-class>inetOrgPerson</object-class>
+                <base-dn>dc=carlspring,dc=com</base-dn>
             </query>
         </user-mapping>
         <group-mapping>
             <groupId>cn</groupId>
-            <groupMember>uniqueMember</groupMember>
+            <group-member>uniqueMember</group-member>
 
             <query>
-                <objectClass>groupOfUniqueNames</objectClass>
-                <baseDn>ou=groups</baseDn>
+                <object-class>groupOfUniqueNames</object-class>
+                <base-dn>ou=groups</base-dn>
             </query>
         </group-mapping>
     </attribute-mappings>

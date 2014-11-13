@@ -9,21 +9,10 @@
 
     <bean name="userManager" class="org.carlspring.strongbox.security.jaas.managers.UserManager" />
 
-    <bean name="userParser" class="org.carlspring.strongbox.xml.parsers.UserParser" />
-
-    <bean name="authorizationConfigurationParser" class="org.carlspring.strongbox.xml.parsers.AuthorizationConfigurationParser" />
-
-    <bean name="authorizationManager" class="org.carlspring.strongbox.security.jaas.managers.AuthorizationManager"
+    <bean name="authorizationManager"
+          class="org.carlspring.strongbox.security.jaas.managers.AuthorizationManager"
           init-method="load"/>
 
-    <bean name="usersDaoXml" class="org.carlspring.strongbox.dao.xml.impl.UsersDaoImpl">
-        <property name="userParser" ref="userParser"/>
-    </bean>
-
-    <!--
-    <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.xml.XMLUserRealm">
-        <property name="usersDaoXml" ref="usersDaoXml"/>
-    </bean>
-    -->
+    <bean name="usersDaoXml" class="org.carlspring.strongbox.dao.xml.impl.UsersDaoImpl"/>
 
 </beans>

@@ -25,9 +25,12 @@ public class UserManager
         return users;
     }
 
-    public List<User> getUsersAsList()
+    public Set<User> getUsersAsSet()
     {
-        return new ArrayList<User>(users.values());
+        final Set<User> users = new LinkedHashSet<>();
+        users.addAll(this.users.values());
+
+        return users;
     }
 
     public void add(User user)

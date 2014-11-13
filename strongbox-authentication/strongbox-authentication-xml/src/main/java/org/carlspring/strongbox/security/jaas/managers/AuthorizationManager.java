@@ -5,13 +5,13 @@ import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.security.jaas.Privilege;
 import org.carlspring.strongbox.security.jaas.Role;
 import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.Users;
 import org.carlspring.strongbox.security.jaas.util.PrivilegeUtils;
 import org.carlspring.strongbox.security.jaas.util.RoleUtils;
-import org.carlspring.strongbox.xml.parsers.AuthorizationConfigurationParser;
-import org.carlspring.strongbox.xml.parsers.UserParser;
+import org.carlspring.strongbox.xml.parsers.GenericParser;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +39,9 @@ public class AuthorizationManager implements AuthenticationConfigurationManager
 
     private RoleManager roleManager = new RoleManager();
 
-    @Autowired
-    private UserParser userParser;
+    private GenericParser<Users> userParser = new GenericParser<Users>(Users.class);
 
-    @Autowired
-    private AuthorizationConfigurationParser authorizationConfigurationParser;
+    private GenericParser<AuthorizationConfiguration> authorizationConfigurationParser = new GenericParser<>(AuthorizationConfiguration.class);
 
 
     public AuthorizationManager()
@@ -52,42 +50,37 @@ public class AuthorizationManager implements AuthenticationConfigurationManager
 
     @Override
     public void load()
-            throws IOException
+            throws IOException, JAXBException
     {
         loadAuthorization();
         loadUsers();
     }
 
     private void loadUsers()
-            throws IOException
+            throws IOException, JAXBException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/security-users.xml",
-                                                                                   "security.users.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource("security.users.xml",
                                                                                    "etc/conf/security-users.xml");
 
         logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
 
         //noinspection unchecked
-        List<User> users = (List<User>) userParser.parse(resource.getInputStream());
-        for (User user : users)
+        final Users users = userParser.parse(resource.getInputStream());
+        for (User user : users.getUsers())
         {
             userManager.add(user);
         }
     }
 
     private void loadAuthorization()
-            throws IOException
+            throws IOException, JAXBException
     {
-        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
-
-        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() +
-                                                                                   "/etc/conf/security-authorization.xml",
-                                                                                   "security.authorization.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource("security.authorization.xml",
                                                                                    "etc/conf/security-authorization.xml");
 
         logger.info("Loading Strongbox configuration from " + resource.toString() + "...");
 
-        AuthorizationConfiguration configuration = parser.parse(resource.getInputStream());
+        AuthorizationConfiguration configuration = authorizationConfigurationParser.parse(resource.getInputStream());
         for (Privilege privilege : configuration.getPrivileges())
         {
             privilegeManager.add(privilege.getName(), privilege);
@@ -101,27 +94,27 @@ public class AuthorizationManager implements AuthenticationConfigurationManager
 
     @Override
     public void store()
-            throws IOException
+            throws IOException, JAXBException
     {
         storeUsers();
         storeAuthorization();
     }
 
     private void storeUsers()
-            throws IOException
+            throws IOException, JAXBException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/security-users.xml",
-                                                                                   "security.users.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource("security.users.xml",
                                                                                    "etc/conf/security-users.xml");
 
-        userParser.store(userManager.getUsersAsList(), resource.getFile().getAbsoluteFile());
+        Users users = new Users(userManager.getUsersAsSet());
+
+        userParser.store(users, resource.getFile().getAbsoluteFile());
     }
 
     private void storeAuthorization()
-            throws IOException
+            throws IOException, JAXBException
     {
-        Resource resource = configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/security-authorization.xml",
-                                                                                   "security.authorization.xml",
+        Resource resource = configurationResourceResolver.getConfigurationResource("security.authorization.xml",
                                                                                    "etc/conf/security-authorization.xml");
 
         AuthorizationConfiguration configuration = new AuthorizationConfiguration();

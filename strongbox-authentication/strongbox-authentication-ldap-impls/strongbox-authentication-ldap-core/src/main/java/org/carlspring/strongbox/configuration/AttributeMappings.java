@@ -1,17 +1,22 @@
 package org.carlspring.strongbox.configuration;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author mtodorov
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AttributeMappings
 {
 
-    @XStreamAlias(value = "user-mapping")
+    @XmlElement(name = "user-mapping")
     private UserMapping userMapping;
 
-    @XStreamAlias(value = "group-mapping")
+    @XmlElement(name = "group-mapping")
     private GroupMapping groupMapping;
 
 

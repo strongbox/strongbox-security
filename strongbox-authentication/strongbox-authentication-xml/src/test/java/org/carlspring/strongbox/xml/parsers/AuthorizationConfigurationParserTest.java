@@ -4,12 +4,12 @@ import org.carlspring.strongbox.configuration.AuthorizationConfiguration;
 import org.carlspring.strongbox.security.jaas.Privilege;
 import org.carlspring.strongbox.security.jaas.Role;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.XStream;
 import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -28,20 +28,19 @@ public class AuthorizationConfigurationParserTest
 
     public static final String XML_OUTPUT_FILE = CONFIGURATION_BASEDIR + "/security-authorization-saved.xml";
 
+    private GenericParser<AuthorizationConfiguration> parser = new GenericParser<AuthorizationConfiguration>(AuthorizationConfiguration.class);
+
 
     @Test
     public void testParseAuthorizationConfiguration()
-            throws IOException
+            throws IOException, JAXBException
     {
         File xmlFile = new File(XML_FILE);
 
         System.out.println("Parsing " + xmlFile.getAbsolutePath() + "...");
 
-        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
-        final XStream xstream = parser.getXStreamInstance();
-
         //noinspection unchecked
-        AuthorizationConfiguration configuration = (AuthorizationConfiguration) xstream.fromXML(xmlFile);
+        AuthorizationConfiguration configuration = parser.parse(xmlFile);
 
         assertTrue("Failed to parse the authorization configuration!", configuration != null);
         assertFalse("Failed to parse any roles!", configuration.getRoles() == null);
@@ -52,7 +51,7 @@ public class AuthorizationConfigurationParserTest
 
     @Test
     public void testStoreAuthorizationConfiguration()
-            throws IOException
+            throws IOException, JAXBException
     {
         List<Role> roles = new ArrayList<Role>();
         roles.add(new Role("admin", "Admin role"));
@@ -77,7 +76,6 @@ public class AuthorizationConfigurationParserTest
 
         System.out.println("Storing " + outputFile.getAbsolutePath() + "...");
 
-        AuthorizationConfigurationParser parser = new AuthorizationConfigurationParser();
         parser.store(configuration, outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);

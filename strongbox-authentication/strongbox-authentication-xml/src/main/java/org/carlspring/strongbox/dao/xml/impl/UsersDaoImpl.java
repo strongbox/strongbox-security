@@ -4,12 +4,15 @@ import org.carlspring.strongbox.dao.xml.UsersDao;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.security.jaas.Role;
 import org.carlspring.strongbox.security.jaas.User;
+import org.carlspring.strongbox.security.jaas.Users;
 import org.carlspring.strongbox.security.jaas.authentication.UserResolutionException;
 import org.carlspring.strongbox.security.jaas.authentication.UserStorageException;
 import org.carlspring.strongbox.security.jaas.managers.UserManager;
-import org.carlspring.strongbox.xml.parsers.UserParser;
+import org.carlspring.strongbox.xml.parsers.GenericParser;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +36,7 @@ public class UsersDaoImpl
     @Autowired
     private UserManager userManager;
 
-    @Autowired
-    private UserParser userParser;
+    private GenericParser<Users> userParser = new GenericParser<>(Users.class);
 
 
     public UsersDaoImpl()
@@ -45,12 +47,18 @@ public class UsersDaoImpl
     public void createUser(User user)
             throws UserStorageException
     {
+        //noinspection TryWithIdenticalCatches
         try
         {
             userManager.add(user);
-            userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+
+            userParser.store(new Users(userManager.getUsersAsSet()), getUsersConfigurationFile().getFile());
         }
         catch (IOException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
+        catch (JAXBException e)
         {
             throw new UserStorageException(e.getMessage(), e);
         }
@@ -78,12 +86,17 @@ public class UsersDaoImpl
     {
         if (userManager.contains(username))
         {
+            //noinspection TryWithIdenticalCatches
             try
             {
                 userManager.remove(username);
-                userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+                userParser.store(new Users(userManager.getUsersAsSet()), getUsersConfigurationFile().getFile());
             }
             catch (IOException e)
+            {
+                throw new UserStorageException(e.getMessage(), e);
+            }
+            catch (JAXBException e)
             {
                 throw new UserStorageException(e.getMessage(), e);
             }
@@ -107,13 +120,18 @@ public class UsersDaoImpl
                            String roleName)
             throws UserStorageException
     {
+        //noinspection TryWithIdenticalCatches
         try
         {
             user.addRole(roleName);
             userManager.add(user);
-            userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+            userParser.store(new Users(userManager.getUsersAsSet()), getUsersConfigurationFile().getFile());
         }
         catch (IOException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
+        catch (JAXBException e)
         {
             throw new UserStorageException(e.getMessage(), e);
         }
@@ -132,12 +150,17 @@ public class UsersDaoImpl
                            String roleName)
             throws UserStorageException
     {
+        //noinspection TryWithIdenticalCatches
         try
         {
             user.removeRole(roleName);
-            userParser.store(userManager.getUsersAsList(), getUsersConfigurationFile().getFile());
+            userParser.store(new Users(userManager.getUsersAsSet()), getUsersConfigurationFile().getFile());
         }
         catch (IOException e)
+        {
+            throw new UserStorageException(e.getMessage(), e);
+        }
+        catch (JAXBException e)
         {
             throw new UserStorageException(e.getMessage(), e);
         }
@@ -178,21 +201,10 @@ public class UsersDaoImpl
         return userManager.contains(username);
     }
 
-    public UserParser getUserParser()
-    {
-        return userParser;
-    }
-
-    public void setUserParser(UserParser userParser)
-    {
-        this.userParser = userParser;
-    }
-
     public Resource getUsersConfigurationFile()
             throws IOException
     {
-        return configurationResourceResolver.getConfigurationResource(ConfigurationResourceResolver.getBasedir() + "/etc/conf/security-users.xml",
-                                                                      "security.users.xml",
+        return configurationResourceResolver.getConfigurationResource("security.users.xml",
                                                                       "etc/conf/security-users.xml");
     }
 
