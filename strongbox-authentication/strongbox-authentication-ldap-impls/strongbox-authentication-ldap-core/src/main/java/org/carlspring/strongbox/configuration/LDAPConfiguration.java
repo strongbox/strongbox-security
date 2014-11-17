@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @XmlRootElement(name = "ldap-configuration")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LDAPConfiguration implements Serializable
+public class LDAPConfiguration extends ServerConfiguration
 {
 
     @XmlElement
