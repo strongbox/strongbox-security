@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * @author mtodorov
  */
-@XmlRootElement
+@XmlRootElement(name = "attribute-mappings")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AttributeMappings
 {
