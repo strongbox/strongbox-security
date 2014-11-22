@@ -1,5 +1,6 @@
 package org.carlspring.strongbox.xml.parsers;
 
+import org.carlspring.strongbox.booters.ResourcesBooter;
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
 
 import javax.xml.bind.JAXBException;
@@ -7,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -24,6 +26,11 @@ public class LDAPConfigurationParserTest
     public static final String XML_OUTPUT_FILE = CONFIGURATION_BASEDIR + "/security-authentication-ldap-saved.xml";
 
     private GenericParser<LDAPConfiguration> parser = new GenericParser<LDAPConfiguration>(LDAPConfiguration.class);
+
+    // This field is indeed used. It's execute() method is being invoked with a @PostConstruct.
+    @SuppressWarnings("UnusedDeclaration")
+    @Autowired
+    private ResourcesBooter resourcesBooter;
 
 
     @Test
