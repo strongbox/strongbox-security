@@ -1,10 +1,7 @@
 package org.carlspring.strongbox.rest;
 
 import org.carlspring.strongbox.client.LDAPRestClient;
-import org.carlspring.strongbox.configuration.AttributeMappings;
-import org.carlspring.strongbox.configuration.GroupMapping;
-import org.carlspring.strongbox.configuration.LDAPConfiguration;
-import org.carlspring.strongbox.configuration.UserMapping;
+import org.carlspring.strongbox.configuration.*;
 import org.carlspring.strongbox.resource.ConfigurationResourceResolver;
 import org.carlspring.strongbox.xml.parsers.GenericParser;
 

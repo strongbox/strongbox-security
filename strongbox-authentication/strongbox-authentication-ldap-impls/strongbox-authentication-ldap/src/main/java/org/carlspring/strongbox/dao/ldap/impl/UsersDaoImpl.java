@@ -1,5 +1,6 @@
 package org.carlspring.strongbox.dao.ldap.impl;
 
+import org.carlspring.strongbox.configuration.GenericLDAPConfiguration;
 import org.carlspring.strongbox.configuration.LDAPConfiguration;
 import org.carlspring.strongbox.configuration.UserMapping;
 import org.carlspring.strongbox.dao.ldap.UsersDao;
@@ -39,7 +40,7 @@ public class UsersDaoImpl extends BaseLdapDaoImpl
     @Autowired
     private ConfigurationResourceResolver configurationResourceResolver;
 
-    private LDAPConfiguration ldapConfiguration;
+    private GenericLDAPConfiguration ldapConfiguration;
 
 
     public UsersDaoImpl()
@@ -351,10 +352,11 @@ public class UsersDaoImpl extends BaseLdapDaoImpl
 
     public LDAPConfiguration getLdapConfiguration()
     {
-        return ldapConfiguration;
+        return (LDAPConfiguration) ldapConfiguration;
     }
 
-    public void setLdapConfiguration(LDAPConfiguration ldapConfiguration)
+    @Override
+    public void setLdapConfiguration(GenericLDAPConfiguration ldapConfiguration)
     {
         this.ldapConfiguration = ldapConfiguration;
     }

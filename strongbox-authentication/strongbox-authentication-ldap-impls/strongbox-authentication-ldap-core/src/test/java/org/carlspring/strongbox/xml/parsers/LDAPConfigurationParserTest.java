@@ -67,6 +67,9 @@ public class LDAPConfigurationParserTest
         parser.store(configuration, outputFile.getCanonicalPath());
 
         assertTrue("Failed to store the produced XML!", outputFile.length() > 0);
+
+        //noinspection ResultOfMethodCallIgnored
+        outputFile.delete();
     }
 
 }

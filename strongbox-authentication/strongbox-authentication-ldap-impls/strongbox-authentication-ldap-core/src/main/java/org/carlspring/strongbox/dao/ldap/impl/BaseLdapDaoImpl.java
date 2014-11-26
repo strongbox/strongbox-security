@@ -1,6 +1,6 @@
 package org.carlspring.strongbox.dao.ldap.impl;
 
-import org.carlspring.strongbox.configuration.LDAPConfiguration;
+import org.carlspring.strongbox.configuration.GenericLDAPConfiguration;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * @author mtodorov
  */
 @Component
-public abstract class BaseLdapDaoImpl
+public abstract class BaseLdapDaoImpl<T extends GenericLDAPConfiguration>
 {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseLdapDaoImpl.class);
@@ -163,9 +163,9 @@ public abstract class BaseLdapDaoImpl
         return getLdapConfiguration().getRootDn();
     }
 
-    public abstract LDAPConfiguration getLdapConfiguration();
+    public abstract T getLdapConfiguration();
 
-    public abstract void setLdapConfiguration(LDAPConfiguration ldapConfiguration);
+    public abstract void setLdapConfiguration(T ldapConfiguration);
 
     public boolean shouldBindAnonymously()
     {

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("singleton")
-public class LDAPConfigurationManager extends AbstractConfigurationManager<LDAPConfiguration>
+public class LDAPConfigurationManager extends AbstractLDAPConfigurationManager
 {
 
     @Autowired
@@ -26,17 +26,17 @@ public class LDAPConfigurationManager extends AbstractConfigurationManager<LDAPC
         super(LDAPConfiguration.class);
     }
 
-    @SuppressWarnings("unchecked")
-    public LDAPConfiguration getConfiguration()
-    {
-        return (LDAPConfiguration) super.getConfiguration();
-    }
-
     public Resource getConfigurationResource()
             throws IOException
     {
-        return configurationResourceResolver.getConfigurationResource("security.users.xml",
+        return configurationResourceResolver.getConfigurationResource("security.ldap.xml",
                                                                       "etc/conf/security-authentication-ldap.xml");
+    }
+
+    @Override
+    public ConfigurationResourceResolver getConfigurationResourceResolver()
+    {
+        return configurationResourceResolver;
     }
 
 }

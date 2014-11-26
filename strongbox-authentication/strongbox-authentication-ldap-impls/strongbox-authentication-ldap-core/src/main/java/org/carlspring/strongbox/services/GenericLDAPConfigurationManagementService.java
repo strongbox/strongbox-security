@@ -1,7 +1,6 @@
 package org.carlspring.strongbox.services;
 
 import org.carlspring.strongbox.configuration.AttributeMappings;
-import org.carlspring.strongbox.configuration.LDAPConfiguration;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -9,13 +8,13 @@ import java.io.IOException;
 /**
  * @author mtodorov
  */
-public interface LDAPConfigurationManagementService
+public interface GenericLDAPConfigurationManagementService<T>
 {
 
-    void setConfiguration(LDAPConfiguration ldapConfiguration)
+    void setConfiguration(T ldapConfiguration)
             throws IOException, JAXBException;
 
-    LDAPConfiguration getConfiguration();
+    T getConfiguration();
 
     public String getHost();
 
