@@ -10,32 +10,32 @@ public class GenericLDAPConfiguration
 {
 
     @XmlElement
-    String host;
+    private String host;
 
     @XmlElement
-    int port;
+    private int port;
 
     @XmlElement
-    String protocol;
+    private String protocol;
 
     @XmlElement
-    String username;
+    private String username;
 
     @XmlElement
-    String password;
+    private String password;
 
     @XmlElement(name = "root-dn")
-    String rootDn;
+    private String rootDn;
 
     /**
      * The connection time limit. If set to 0, will wait indefinitely,
      * until the results are retrieved.
      */
     @XmlElement
-    int timeout = 30000;
+    private int timeout = 30000;
 
     @XmlElement
-    String domain;
+    private String domain;
 
     /**
      * The supported login modes are:
@@ -44,13 +44,13 @@ public class GenericLDAPConfiguration
      * - principal/password (principal)
      */
     @XmlElement(name = "login-mode")
-    String loginMode;
+    private String loginMode;
 
     @XmlElement(name = "attribute-mappings")
-    AttributeMappings attributeMappings;
+    private AttributeMappings attributeMappings;
 
     @XmlElement(name = "authentication-type")
-    String authenticationType;
+    private String authenticationType;
 
 
     public GenericLDAPConfiguration()
