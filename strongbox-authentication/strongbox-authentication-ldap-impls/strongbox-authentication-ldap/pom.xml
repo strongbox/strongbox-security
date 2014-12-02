@@ -233,6 +233,10 @@
                 <activeByDefault>false</activeByDefault>
             </activation>
 
+            <properties>
+                <dir.strongbox>${project.build.directory}/strongbox</dir.strongbox>
+            </properties>
+
             <build>
                 <plugins>
                     <plugin>
@@ -285,6 +289,7 @@
                             <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
                             <systemPropertyVariables>
                                 <port.unboundid>${port.unboundid}</port.unboundid>
+                                <strongbox.basedir>${basedir}/target/strongbox</strongbox.basedir>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
