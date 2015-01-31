@@ -1,6 +1,6 @@
 package org.carlspring.strongbox.security.jaas;
 
-import org.carlspring.strongbox.security.jaas.rdbms.DatabaseCallbackHandler;
+import org.carlspring.strongbox.security.jaas.jdbc.DatabaseCallbackHandler;
 
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
