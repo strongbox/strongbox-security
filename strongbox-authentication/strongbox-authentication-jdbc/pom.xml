@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.carlspring.strongbox</groupId>
+        <artifactId>strongbox-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>strongbox-authentication-jdbc</artifactId>
+
+    <name>Strongbox Authentication: JDBC</name>
+
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Carlspring Consulting &amp; Development Ltd.</name>
+        <url>http://www.carlspring.org/</url>
+    </organization>
+
+    <inceptionYear>2014</inceptionYear>
+
+    <properties>
+        <version.derby>10.10.1.1</version.derby>
+    </properties>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>${basedir}/src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>strongbox-security-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>strongbox-storage-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.carlspring.strongbox</groupId>
+            <artifactId>strongbox-common-resources</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.carlspring.strongbox</groupId>
+            <artifactId>strongbox-storage-api-resources</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.carlspring</groupId>
+            <artifactId>properties-injector</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${version.derby}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>${version.derby}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbynet</artifactId>
+            <version>${version.derby}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+             <artifactId>jul-to-slf4j</artifactId>
+            <version>${version.jcl}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${version.logback}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${version.spring}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <!-- These two profiles need to be on top: -->
+        <profile>
+            <id>reserve-ports</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.9</version>
+                        <executions>
+                            <execution>
+                                <id>reserve-network-port</id>
+                                <goals>
+                                    <goal>reserve-network-port</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <portNames>
+                                        <portName>port.derby</portName>
+                                    </portNames>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>set-default-ports</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <!-- Default ports for local development: -->
+                <port.derby>1527</port.derby>
+            </properties>
+        </profile>
+        <profile>
+            <id>run-it-tests</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>!true</value>
+                </property>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <derby.url>jdbc:derby://localhost:${port.derby}/db;user=derby;password=derby</derby.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.carlspring.maven</groupId>
+                        <artifactId>derby-maven-plugin</artifactId>
+                        <version>1.9</version>
+
+                        <configuration>
+                            <failIfAlreadyRunning>false</failIfAlreadyRunning>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>start-derby</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+
+                                <configuration>
+                                    <port>${port.derby}</port>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <version>1.5</version>
+
+                        <dependencies>
+                            <!-- specify the dependent jdbc driver here -->
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derby</artifactId>
+                            	<version>${version.derby}</version>
+                            </dependency>
+                            <dependency>
+                            	<groupId>org.apache.derby</groupId>
+                            	<artifactId>derbyclient</artifactId>
+                            	<version>${version.derby}</version>
+                            </dependency>
+                        </dependencies>
+
+                        <!-- common configuration shared by all executions -->
+                        <configuration>
+                            <driver>org.apache.derby.jdbc.ClientDriver</driver>
+                            <url>${derby.url};create=true</url>
+                            <onError>continue</onError>
+                        </configuration>
+
+                        <executions>
+                            <execution>
+                                <id>db-populate</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <onError>abort</onError>
+                                    <autocommit>true</autocommit>
+                                    <srcFiles>
+                                        <srcFile>${basedir}/src/test/resources/sql/derby/01-db.sql</srcFile>
+                                        <srcFile>${basedir}/src/test/resources/sql/derby/02-ddl.sql</srcFile>
+                                    </srcFiles>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.15</version>
+
+                        <configuration>
+                            <forkMode>once</forkMode>
+                            <argLine>-Djava.security.auth.login.config=${project.build.testOutputDirectory}/login.conf</argLine>
+                            <systemPropertyVariables>
+                                <port.derby>${port.derby}</port.derby>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

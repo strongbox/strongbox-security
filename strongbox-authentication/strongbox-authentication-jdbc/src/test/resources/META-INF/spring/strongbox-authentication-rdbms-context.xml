@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="org.carlspring.strongbox" />
+
+    <bean id="usersDaoJdbc" class="org.carlspring.strongbox.dao.jdbc.impl.UsersDaoImpl"/>
+
+    <bean id="rolesDaoJdbc" class="org.carlspring.strongbox.dao.jdbc.impl.RolesDaoImpl"/>
+
+    <bean name="userResolver" class="org.carlspring.strongbox.security.jaas.jdbc.JDBCUserRealm">
+        <property name="usersDao" ref="usersDaoJdbc"/>
+    </bean>
+
+</beans>
